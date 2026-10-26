@@ -1,0 +1,36 @@
+<!DOCTYPE html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Оплата заказа — AI KVETKA (демо)</title><link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400&family=Gilda+Display&display=swap" rel="stylesheet"><style>
+*{box-sizing:border-box;margin:0;padding:0}body{background:#bccbae;color:#14241a;font-family:'Josefin Sans',sans-serif;font-weight:300;line-height:1.6;padding:24px 16px}
+.demo{background:#173524;color:#f1f5ea;text-align:center;font-size:12px;letter-spacing:.2em;text-transform:uppercase;padding:8px;max-width:440px;margin:0 auto}
+.box{max-width:440px;margin:0 auto;background:#d4dfc9;border:1px solid #86996f;padding:28px 24px}
+h1,h2{font-family:'Gilda Display',serif;font-weight:400}h1{font-size:22px;letter-spacing:.2em}
+.row{display:flex;justify-content:space-between;border-bottom:1px solid #9cb088;padding:8px 0;font-size:15px}
+label{display:block;font-size:11px;letter-spacing:.2em;text-transform:uppercase;margin:16px 0 6px}
+input{width:100%;font:inherit;font-size:17px;padding:11px 12px;border:1px solid #86996f;background:#fff;color:#14241a}
+.two{display:flex;gap:12px}.two>div{flex:1}
+.brands{display:flex;gap:8px;margin:18px 0 4px}.brands span{border:1px solid #86996f;padding:3px 8px;font-size:12px;font-weight:400}
+.sec{font-size:13px;opacity:.8;margin-top:10px}
+button{width:100%;margin-top:20px;background:#173524;color:#f1f5ea;border:0;padding:15px;font:inherit;font-size:14px;letter-spacing:.2em;text-transform:uppercase;cursor:pointer}button:disabled{opacity:.6}
+a{color:#173524}.cancel{display:block;text-align:center;margin-top:16px;font-size:14px}
+.ok{text-align:center}.ok .c{font-size:48px;color:#173524}
+.sp{display:inline-block;width:14px;height:14px;border:2px solid #bccbae;border-top-color:transparent;border-radius:50%;animation:r .8s linear infinite;vertical-align:-2px;margin-right:8px}@keyframes r{to{transform:rotate(360deg)}}
+</style></head><body>
+<div class="demo">ДЕМО — данные никуда не отправляются</div>
+<div class="box" id="b">
+<p style="font-size:12px;letter-spacing:.2em;text-transform:uppercase;opacity:.7">Безопасная страница оплаты</p>
+<h1>AI KVETKA</h1>
+<div class="row"><span>Заказ</span><b id="on">№—</b></div><div class="row"><span>Сумма</span><b id="os">0 BYN</b></div>
+<form id="pf" autocomplete="off">
+<div class="brands"><span>VISA</span><span>Mastercard</span><span>Белкарт</span></div>
+<label>Номер карты</label><input inputmode="numeric" placeholder="0000 0000 0000 0000" maxlength="19" required>
+<div class="two"><div><label>Срок</label><input inputmode="numeric" placeholder="ММ/ГГ" maxlength="5" required></div><div><label>CVC</label><input inputmode="numeric" type="password" placeholder="123" maxlength="3" required></div></div>
+<button id="pb" type="submit">Оплатить</button>
+<p class="sec">🔒 Соединение защищено. Это демонстрация: введённые данные не сохраняются и никуда не отправляются.</p>
+</form>
+<a class="cancel" href="index.html">Вернуться в магазин</a>
+</div>
+<script>
+var o={};try{o=JSON.parse(localStorage.getItem('aik_order'))||{}}catch(e){}
+var n=o.n||'—',s=o.s||0;on.textContent='№'+n;os.textContent=s+' BYN';pb.textContent='Оплатить '+s+' BYN';
+pf.onsubmit=function(e){e.preventDefault();pf.querySelectorAll('input').forEach(function(i){i.value=''});pb.disabled=true;pb.innerHTML='<span class="sp"></span>Обработка…';
+setTimeout(function(){b.innerHTML='<div class="ok"><div class="c">✓</div><h2>Оплата прошла</h2><p>Заказ №'+n+' оплачен · '+s+' BYN</p><p style="margin-top:20px"><a href="index.html">Вернуться на сайт</a></p></div>'},1800)};
+</script></body></html>
