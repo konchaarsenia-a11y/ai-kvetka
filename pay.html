@@ -13,7 +13,7 @@ button{width:100%;margin-top:20px;background:#6b6b3f;color:#efe9df;border:0;padd
 a{color:#6b6b3f}.cancel{display:block;text-align:center;margin-top:16px;font-size:14px}
 .ok{text-align:center}.ok .c{font-size:48px;color:#6b6b3f}
 .sp{display:inline-block;width:14px;height:14px;border:2px solid #efe9df;border-top-color:transparent;border-radius:50%;animation:r .8s linear infinite;vertical-align:-2px;margin-right:8px}@keyframes r{to{transform:rotate(360deg)}}
-</style></head><body>
+</style><style>.ft{padding:60px 32px 36px;text-align:left;border-top:1px solid #d8cfbf;margin-top:40px}.ftg{max-width:1240px;margin:auto;display:grid;grid-template-columns:1.3fr 1fr 1.2fr;gap:40px}.ft .lg{display:block;margin-bottom:16px;letter-spacing:.4em}.ft b{display:block;font-family:"Gilda Display",serif;font-weight:400;font-size:17px;margin-bottom:12px;color:#3b3a2f}.ft p{color:#6d6a5c;font-size:14px;line-height:1.8;margin:0 0 10px}.ft a{color:#3b3a2f}.ft a:hover{text-decoration:underline}.ftp,.ftr{max-width:1240px;margin:26px auto 0!important;font-size:13px!important;text-align:left}.ftp{padding-top:22px;border-top:1px solid #d8cfbf}.ftr{margin-top:6px!important;opacity:.85}@media(max-width:800px){.ftg{grid-template-columns:1fr;gap:20px}}</style></head><body>
 <div class="demo">ДЕМО — данные никуда не отправляются</div>
 <div class="box" id="b">
 <p style="font-size:12px;letter-spacing:.2em;text-transform:uppercase;opacity:.7">Безопасная страница оплаты</p>
@@ -28,9 +28,9 @@ a{color:#6b6b3f}.cancel{display:block;text-align:center;margin-top:16px;font-siz
 </form>
 <a class="cancel" href="index.html">Вернуться в магазин</a>
 </div>
-<script>
+<footer id="ct" class="ft"><div class="ftg"><div><span class="lg">AI KVETKA</span><p>Цветочная студия в ЖК «Минск-Мир»<br>ул. Брилевская, 37<br>ежедневно 9:00–21:00</p><p><a href="https://instagram.com/ai_kvetka">Instagram @ai_kvetka, заказ в Direct</p></div><div><b>Контакты</b><p><a href="tel:+375296991453">+375 (29) 699-14-53</a><br><a href="tel:+375447712574">+375 (44) 771-25-74</a><br><a href="mailto:Ai.kvetka.ai@gmail.com">Ai.kvetka.ai@gmail.com</a></p></div><div><b>Покупателям</b><p><a href="offer.html">Публичная оферта</a><br><a href="privacy.html">Политика обработки персональных данных</a><br><a href="returns.html">Возврат и замена</a><br><a href="index.html#delivery">Доставка и гарантия</a></p></div></div><p class="ftp">Способы оплаты: банковская карта (Visa, Mastercard, Белкарт), ЕРИП, QR-код, наличными при получении</p><p class="ftr">ИП Крыловская Аия Сергеевна, УНП 693419806, юридический адрес: 220000, Минская обл., д. Прилукская Слобода, пер. Счастливый, 4</p></footer><script>
 var o={};try{o=JSON.parse(localStorage.getItem('aik_order'))||{}}catch(e){}
 var n=o.n||'—',s=o.s||0;on.textContent='№'+n;os.textContent=s+' BYN';pb.textContent='Оплатить '+s+' BYN';
 pf.onsubmit=function(e){e.preventDefault();pf.querySelectorAll('input').forEach(function(i){i.value=''});pb.disabled=true;pb.innerHTML='<span class="sp"></span>Обработка…';
-setTimeout(function(){b.innerHTML='<div class="ok"><div class="c">✓</div><h2>Оплата прошла</h2><p>Заказ №'+n+' оплачен · '+s+' BYN</p><p style="margin-top:20px"><a href="index.html">Вернуться на сайт</a></p></div>'},1800)};
+setTimeout(function(){b.innerHTML='<div class="ok"><div class="c">✓</div><h2>Оплата прошла</h2><p>Заказ №'+n+' оплачен, '+s+' BYN</p><p style="margin-top:20px"><a href="index.html">Вернуться на сайт</a></p></div>'},1800)};
 </script></body></html>
