@@ -39,4 +39,4 @@ grp('[data-fc]',v=>fc=v);grp('[data-fp]',v=>fp=v);
 document.querySelectorAll('[data-fc][data-v]').forEach(()=>{});
 const s=document.querySelector('[data-sort]');if(s)s.onchange=()=>{const g=C[0].parentNode;C.slice().sort((a,b)=>s.value=='up'?a.dataset.p-b.dataset.p:s.value=='down'?b.dataset.p-a.dataset.p:C.indexOf(a)-C.indexOf(b)).forEach(c=>g.appendChild(c))};
 C.forEach(c=>c.querySelectorAll('.sz button').forEach(b=>b.onclick=()=>{c.querySelectorAll('.sz button').forEach(x=>x.classList.remove('on'));b.classList.add('on');c.querySelector('.pr').textContent=Math.round(c.dataset.p*b.dataset.k)+' BYN'}));
-</script><script src="cart.js?v=7"></script></body></html>
+</script><script src="cart.js?v=8"></script></body></html>
