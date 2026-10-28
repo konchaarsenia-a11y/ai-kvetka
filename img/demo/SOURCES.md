@@ -44,7 +44,7 @@
 
 | Файл | Что | Автор | Лицензия | Источник |
 |---|---|---|---|---|
-| img/wk/peony-head.webp | головка пиона, фон удалён (используется в 3D-сцене js/wk3d.js) | Valentin Hintikka from Finland | CC BY-SA 2.0 | https://commons.wikimedia.org/wiki/File:White_peony_(14496937656).jpg |
+| img/wk/peony-head.webp | головка пиона, фон удалён, маленький бутон под цветком убран (изменено нами), используется в 3D-сцене js/wk3d.js | Valentin Hintikka from Finland | CC BY-SA 2.0 | https://commons.wikimedia.org/wiki/File:White_peony_(14496937656).jpg |
 | img/wk/peony-flower.webp | PNG-фолбэк: рендер стебля, листьев и той же головки | Valentin Hintikka (головка), остальное наше | CC BY-SA 2.0 | см. строку выше |
 | img/wk/vase-milk.webp | PNG-фолбэк: рендер 3D-вазы (форма и цвет по фото img/n4.jpg) | наш рендер | | |
 

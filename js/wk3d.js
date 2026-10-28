@@ -34,21 +34,28 @@ const vmat=new T.MeshPhysicalMaterial({color:0xf2ebdd,roughness:.62,metalness:0,
 const vase=new T.Mesh(vgeo,vmat);vase.castShadow=true;vase.receiveShadow=true;all.add(vase);
 const vin=new T.Mesh(new T.CircleGeometry(.5,64),new T.MeshStandardMaterial({color:0x8a8070,roughness:1}));vin.rotation.x=-Math.PI/2;vin.position.y=2.78;all.add(vin);
 // ===== стебель (гибкая цепочка), листья
-const stemMat=new T.MeshPhysicalMaterial({color:0x56743a,roughness:.5,clearcoat:.2,clearcoatRoughness:.6});
+// стебель: приглушённый неоднородный зелёный, продольные прожилки, к верху слегка красноватый (как у пионов)
+const stemTex=(()=>{const cv=document.createElement('canvas');cv.width=64;cv.height=256;const g=cv.getContext('2d');const gd=g.createLinearGradient(0,256,0,0);gd.addColorStop(0,'#4a5a33');gd.addColorStop(.6,'#55633a');gd.addColorStop(1,'#5e5a3a');g.fillStyle=gd;g.fillRect(0,0,64,256);
+for(let k=0;k<70;k++){const x=Math.random()*64;g.strokeStyle=Math.random()<.5?'rgba(30,40,20,.18)':'rgba(140,150,100,.12)';g.lineWidth=.5+Math.random()*1.5;g.beginPath();g.moveTo(x,0);g.lineTo(x+(Math.random()-.5)*4,256);g.stroke()}
+for(let k=0;k<40;k++){g.fillStyle='rgba(90,50,40,'+(Math.random()*.08)+')';g.fillRect(Math.random()*64,Math.random()*256,2+Math.random()*6,6+Math.random()*30)}
+const t=new T.CanvasTexture(cv);t.colorSpace=T.SRGBColorSpace;t.wrapS=T.RepeatWrapping;return t})();
+const stemMat=new T.MeshStandardMaterial({map:stemTex,roughness:.72,envMapIntensity:.8});
+const calMat=new T.MeshStandardMaterial({map:stemTex,color:0xc8c8b8,roughness:.65,side:T.DoubleSide,envMapIntensity:.8});
 // стебель выходит из горлышка: нижний кусок внутри вазы неподвижен, точка поворота у края горлышка
 const SEG=6,SL=.25,joints=[];const base=new T.Group();base.position.set(.02,2.99,0);all.add(base);let par=base;
-{const m=new T.Mesh(new T.CylinderGeometry(.052,.054,.32,14,1),stemMat);m.position.y=-.16;base.add(m)}
-for(let i=0;i<SEG;i++){const j=new T.Group();if(i)j.position.y=SL;par.add(j);const rad=.052-.01*i/SEG;
-const m=new T.Mesh(new T.CylinderGeometry(rad*.96,rad,SL*1.08,14,1),stemMat);m.position.y=SL/2;m.castShadow=true;j.add(m);joints.push(j);par=j}
+{const m=new T.Mesh(new T.CylinderGeometry(.046,.046,.32,14,1),stemMat);m.position.y=-.16;base.add(m)}
+const sr=i=>.046+.026*Math.pow(i/SEG,1.6);// стебель толще к головке
+for(let i=0;i<SEG;i++){const j=new T.Group();if(i)j.position.y=SL;par.add(j);
+const m=new T.Mesh(new T.CylinderGeometry(sr(i+1),sr(i),SL*1.08,16,1),stemMat);m.position.y=SL/2;m.castShadow=true;j.add(m);joints.push(j);par=j}
 const bend=[.02,.05,.08,.11,.14,.17];// изгиб под тяжёлую головку
-function leafGeo(len,wid){const g=new T.PlaneGeometry(1,1,20,36),p=g.attributes.position,cs=[],a=new T.Color(0x24461f),b=new T.Color(0x3d6a30),vn=new T.Color(0x6f9356),tc=new T.Color();
+function leafGeo(len,wid){const g=new T.PlaneGeometry(1,1,20,36),p=g.attributes.position,cs=[],a=new T.Color(0x29401f),b=new T.Color(0x3f5a2e),vn=new T.Color(0x667a4c),tc=new T.Color();
 for(let i=0;i<p.count;i++){const u=p.getX(i),v=p.getY(i)+.5;const w=wid*Math.pow(Math.sin(Math.PI*Math.min(1,v*1.02)),.75)*(1-.35*v)+.004;const x=u*w*2,ax=Math.abs(x);
 p.setXYZ(i,x,v*len,-ax*.5-v*v*.25*len+.015*Math.sin(v*22)*ax);tc.copy(a).lerp(b,cl(.25+.55*v-.4*Math.abs(2*u)));
 const mid=cl(1-Math.abs(u)/.03);const side=Math.pow(Math.max(0,Math.cos((v*len-ax*1.3)*16)),5)*(Math.abs(2*u)<.85?1:0)*.18;tc.lerp(vn,Math.max(mid*.6,side));cs.push(tc.r,tc.g,tc.b)}
 g.setAttribute('color',new T.Float32BufferAttribute(cs,3));g.computeVertexNormals();return g}
-const leafMat=new T.MeshPhysicalMaterial({vertexColors:true,roughness:.42,side:T.DoubleSide,clearcoat:.3,clearcoatRoughness:.5,sheen:.2,sheenColor:new T.Color(0xb9d4a0)});
+const leafMat=new T.MeshPhysicalMaterial({vertexColors:true,roughness:.6,side:T.DoubleSide,clearcoat:.12,clearcoatRoughness:.6,sheen:.15,sheenColor:new T.Color(0xb0c49a)});
 const leaves=[];
-[[1,.9,1.15,-.95],[2,-2.0,1.05,-1.0],[3,2.5,.9,-1.05],[4,-.6,.75,-1.1]].forEach(([ji,ry,s,rx])=>{const L=new T.Group();L.rotation.y=ry;joints[ji].add(L);
+[[2,2.3,.8,-.72],[3,-.9,.68,-.7]].forEach(([ji,ry,s,rx])=>{const L=new T.Group();L.rotation.y=ry;joints[ji].add(L);
 [[0,1.05,.24],[.5,.78,.18],[-.5,.78,.18]].forEach(([rz,len,wid])=>{const pv=new T.Group();pv.rotation.set(rx+Math.abs(rz)*.25,0,rz);L.add(pv);
 const lf=new T.Mesh(leafGeo(len*s,wid*s),leafMat);lf.castShadow=true;lf.position.z=.04;pv.add(lf);leaves.push({pv,bx:pv.rotation.x,ph:rr(0,6.3)})})});
 // ===== головка: фото пиона
@@ -57,8 +64,14 @@ const HW=3.0,HH=HW*tex.image.height/tex.image.width;
 const hp=new T.Group();hp.position.y=SL;joints[SEG-1].add(hp);
 const hb=new T.Group();hp.add(hb);
 const hm=new T.Mesh(new T.PlaneGeometry(HW,HH),new T.MeshBasicMaterial({map:tex,transparent:true,alphaTest:.04,toneMapped:false,side:T.DoubleSide,color:0xfaf6f2}));
-hm.position.set(HW*(0.5-.47),HH*(.5-.12)-.05,.32);hm.castShadow=true;hm.customDepthMaterial=new T.MeshDepthMaterial({depthPacking:T.RGBADepthPacking,map:tex,alphaTest:.5});
+hm.position.set(HW*(0.5-.461),HH*(.5-.13)-.02,-.12);hm.castShadow=true;hm.customDepthMaterial=new T.MeshDepthMaterial({depthPacking:T.RGBADepthPacking,map:tex,alphaTest:.5});
 hb.add(hm);
+// чашечка на конце стебля (в пространстве стебля, без стыка): утолщение и чашелистики, обнимающие основание цветка
+{const cg=new T.Group();cg.position.y=-.02;hp.add(cg);
+const rc=new T.Mesh(new T.SphereGeometry(.105,20,14),calMat);rc.scale.set(1,.8,1);rc.position.y=.03;rc.castShadow=true;cg.add(rc);
+const nk=new T.Mesh(new T.CylinderGeometry(.09,sr(SEG),.12,16,1,true),calMat);nk.position.y=-.03;cg.add(nk);
+for(let k=0;k<5;k++){const L=new T.Group();L.rotation.y=k/5*6.283+.3;cg.add(L);const pv=new T.Group();pv.rotation.x=-.85-(k%2)*.25;pv.position.y=.02;L.add(pv);
+const sp=new T.Mesh(leafGeo(.26+(k%2)*.06,.13),leafMat);sp.castShadow=true;pv.add(sp)}}
 // ===== размер, анимация
 box.appendChild(r.domElement);
 function size(){const w=W(),h=H();r.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix()}
@@ -79,7 +92,9 @@ if(LAYER=='vase'){hp.visible=false;joints.forEach(j=>j.visible=false);base.visib
 if(LAYER=='flower'){vase.visible=false;vin.visible=false;gr.visible=false;sc.userData.cs.visible=false}
 if(LAYER){pose(0);const v=new T.Vector3(.02,2.99,0).applyMatrix4(all.matrixWorld).project(cam);box.dataset.o=((v.x+1)/2).toFixed(4)+' '+((1-v.y)/2).toFixed(4)}
 if(LAYER=='check'){const P=prof.slice(0,22),rad=y=>{for(let i=1;i<P.length;i++)if(P[i].y>=y){const a=P[i-1],b=P[i];return a.x+(b.x-a.x)*(y-a.y)/(b.y-a.y||1)}return 0};const iv=new T.Matrix4(),w=new T.Vector3();let bad=0,n=0,miny=9;
-for(let t=0;t<60;t+=.37){pose(t);all.updateMatrixWorld(true);iv.copy(all.matrixWorld).invert();base.traverse(o=>{if(!o.isMesh)return;const p=o.geometry.attributes.position;for(let i=0;i<p.count;i++){w.fromBufferAttribute(p,i).applyMatrix4(o.matrixWorld).applyMatrix4(iv);n++;const rr=Math.hypot(w.x,w.z);if(w.y<3.0&&w.y>0&&rr>.47&&rr<=rad(w.y)+.02)bad++;if(rr>.47&&w.y<miny)miny=w.y}})}box.dataset.chk=bad+'/'+n+' miny_out='+miny.toFixed(3)}
+for(let t=0;t<60;t+=.37){pose(t);all.updateMatrixWorld(true);iv.copy(all.matrixWorld).invert();base.traverse(o=>{if(!o.isMesh)return;const p=o.geometry.attributes.position;for(let i=0;i<p.count;i++){w.fromBufferAttribute(p,i).applyMatrix4(o.matrixWorld).applyMatrix4(iv);n++;const rr=Math.hypot(w.x,w.z);if(w.y<3.0&&w.y>0&&rr>.47&&rr<=rad(w.y)+.02)bad++;if(rr>.47&&w.y<miny)miny=w.y}})}let lv=0,lmin=9,ln=0;const pr=new T.Vector3();for(const cx of[-1,0,1])for(const cy of[-1,1])for(let t=0;t<60;t+=1.3){mx.x=mx.tx=cx;mx.y=mx.ty=cy;pose(t);all.updateMatrixWorld(true);cam.updateMatrixWorld();let top=-9;for(let k=0;k<48;k++){pr.set(.6*Math.cos(k/48*6.283),3.01,.6*Math.sin(k/48*6.283)).applyMatrix4(all.matrixWorld).project(cam);top=Math.max(top,pr.y)}
+for(const l of leaves)l.pv.traverse(o=>{if(!o.isMesh)return;const p=o.geometry.attributes.position;for(let i=0;i<p.count;i+=3){pr.fromBufferAttribute(p,i).applyMatrix4(o.matrixWorld);ln++;const wy=pr.clone().applyMatrix4(iv).y;lmin=Math.min(lmin,wy);pr.project(cam);if(pr.y<top+.03)lv++}})}
+box.dataset.chk=bad+'/'+n+' miny_out='+miny.toFixed(3)+' leaf_below_rim_screen='+lv+'/'+ln+' leaf_min_y='+lmin.toFixed(3)}
 const clk=new T.Clock();let vis=true;new IntersectionObserver(e=>{vis=e[0].isIntersecting}).observe(box);
 (function loop(){if(red){pose(0);r.render(sc,cam);return}requestAnimationFrame(loop);if(!vis||document.hidden)return;pose(clk.getElapsedTime());r.render(sc,cam)})();
 box.classList.add('on');box.dataset.ok=1;
