@@ -35,10 +35,12 @@ const vase=new T.Mesh(vgeo,vmat);vase.castShadow=true;vase.receiveShadow=true;al
 const vin=new T.Mesh(new T.CircleGeometry(.5,64),new T.MeshStandardMaterial({color:0x8a8070,roughness:1}));vin.rotation.x=-Math.PI/2;vin.position.y=2.78;all.add(vin);
 // ===== стебель (гибкая цепочка), листья
 const stemMat=new T.MeshPhysicalMaterial({color:0x56743a,roughness:.5,clearcoat:.2,clearcoatRoughness:.6});
-const SEG=7,SL=.25,joints=[];const base=new T.Group();base.position.set(.02,2.72,0);base.rotation.z=-.05;all.add(base);let par=base;
+// стебель выходит из горлышка: нижний кусок внутри вазы неподвижен, точка поворота у края горлышка
+const SEG=6,SL=.25,joints=[];const base=new T.Group();base.position.set(.02,2.99,0);all.add(base);let par=base;
+{const m=new T.Mesh(new T.CylinderGeometry(.052,.054,.32,14,1),stemMat);m.position.y=-.16;base.add(m)}
 for(let i=0;i<SEG;i++){const j=new T.Group();if(i)j.position.y=SL;par.add(j);const rad=.052-.01*i/SEG;
 const m=new T.Mesh(new T.CylinderGeometry(rad*.96,rad,SL*1.08,14,1),stemMat);m.position.y=SL/2;m.castShadow=true;j.add(m);joints.push(j);par=j}
-const bend=[.0,.01,.02,.03,.03,.04,.05];
+const bend=[.02,.05,.08,.11,.14,.17];// изгиб под тяжёлую головку
 function leafGeo(len,wid){const g=new T.PlaneGeometry(1,1,20,36),p=g.attributes.position,cs=[],a=new T.Color(0x24461f),b=new T.Color(0x3d6a30),vn=new T.Color(0x6f9356),tc=new T.Color();
 for(let i=0;i<p.count;i++){const u=p.getX(i),v=p.getY(i)+.5;const w=wid*Math.pow(Math.sin(Math.PI*Math.min(1,v*1.02)),.75)*(1-.35*v)+.004;const x=u*w*2,ax=Math.abs(x);
 p.setXYZ(i,x,v*len,-ax*.5-v*v*.25*len+.015*Math.sin(v*22)*ax);tc.copy(a).lerp(b,cl(.25+.55*v-.4*Math.abs(2*u)));
@@ -46,7 +48,7 @@ const mid=cl(1-Math.abs(u)/.03);const side=Math.pow(Math.max(0,Math.cos((v*len-a
 g.setAttribute('color',new T.Float32BufferAttribute(cs,3));g.computeVertexNormals();return g}
 const leafMat=new T.MeshPhysicalMaterial({vertexColors:true,roughness:.42,side:T.DoubleSide,clearcoat:.3,clearcoatRoughness:.5,sheen:.2,sheenColor:new T.Color(0xb9d4a0)});
 const leaves=[];
-[[0,.9,1.3,-1.05],[1,-2.0,1.15,-1.1],[3,2.5,1.0,-1.15],[4,-.6,.8,-1.2]].forEach(([ji,ry,s,rx])=>{const L=new T.Group();L.rotation.y=ry;joints[ji].add(L);
+[[1,.9,1.15,-.95],[2,-2.0,1.05,-1.0],[3,2.5,.9,-1.05],[4,-.6,.75,-1.1]].forEach(([ji,ry,s,rx])=>{const L=new T.Group();L.rotation.y=ry;joints[ji].add(L);
 [[0,1.05,.24],[.5,.78,.18],[-.5,.78,.18]].forEach(([rz,len,wid])=>{const pv=new T.Group();pv.rotation.set(rx+Math.abs(rz)*.25,0,rz);L.add(pv);
 const lf=new T.Mesh(leafGeo(len*s,wid*s),leafMat);lf.castShadow=true;lf.position.z=.04;pv.add(lf);leaves.push({pv,bx:pv.rotation.x,ph:rr(0,6.3)})})});
 // ===== головка: фото пиона
@@ -64,17 +66,20 @@ size();addEventListener('resize',size);
 const red=matchMedia('(prefers-reduced-motion: reduce)').matches||!!LAYER;
 const wind=t=>.5*Math.sin(t*.61)+.27*Math.sin(t*1.13+1.3)+.14*Math.sin(t*2.07+.4)+.06*Math.sin(t*3.9+2.1);
 const mx={x:0,y:0,tx:0,ty:0};if(!red)addEventListener('pointermove',e=>{const b=box.getBoundingClientRect();mx.tx=cl((e.clientX-b.left)/b.width)*2-1;mx.ty=cl((e.clientY-b.top)/b.height)*2-1},{passive:true});
-const qi=new T.Quaternion(),qz=new T.Quaternion(),Z=new T.Vector3(0,0,1);
+const qi=new T.Quaternion(),qz=new T.Quaternion(),qx=new T.Quaternion(),Z=new T.Vector3(0,0,1),X=new T.Vector3(1,0,0);
 function pose(t){all.rotation.y=.25+Math.sin(t*.11)*.06;
 for(let i=0;i<SEG;i++){const k=(i+1)/SEG,d=i*.12;joints[i].rotation.z=-bend[i]+wind(t-d)*.02*k;joints[i].rotation.x=bend[i]*.4+wind(t*.87+2-d)*.013*k}
 const g=.6+.4*Math.abs(wind(t*.7));for(const l of leaves)l.pv.rotation.x=l.bx+Math.sin(t*1.3+l.ph)*.035*g+wind(t+l.ph)*.02;
 mx.x+=(mx.tx-mx.x)*.04;mx.y+=(mx.ty-mx.y)*.04;cam.position.set(C0.x+mx.x*.9,C0.y-mx.y*.45,C0.z);cam.lookAt(LK);
 // головка всегда смотрит в камеру, но наклоняется вместе со стеблем
-hp.updateWorldMatrix(true,false);hp.getWorldQuaternion(qi).invert();qz.setFromAxisAngle(Z,wind(t-1.1)*.035-.03);
-hb.quaternion.copy(qi).multiply(cam.quaternion).multiply(qz);const br=1+Math.sin(t*.9)*.006;hb.scale.set(br,br,1)}
+hp.updateWorldMatrix(true,false);hp.getWorldQuaternion(qi).invert();// наклон головки: около 25° вбок по изгибу стебля и около 20° к зрителю, мягкое покачивание
+qz.setFromAxisAngle(Z,-.44+wind(t-1.1)*.035);qx.setFromAxisAngle(X,.34+wind(t*.8+.7)*.02);
+hb.quaternion.copy(qi).multiply(cam.quaternion).multiply(qz).multiply(qx);const br=1+Math.sin(t*.9)*.006;hb.scale.set(br,br,1)}
 if(LAYER=='vase'){hp.visible=false;joints.forEach(j=>j.visible=false);base.visible=false}
 if(LAYER=='flower'){vase.visible=false;vin.visible=false;gr.visible=false;sc.userData.cs.visible=false}
-if(LAYER){pose(0);const v=new T.Vector3(.02,2.85,0).applyMatrix4(all.matrixWorld).project(cam);box.dataset.o=((v.x+1)/2).toFixed(4)+' '+((1-v.y)/2).toFixed(4)}
+if(LAYER){pose(0);const v=new T.Vector3(.02,2.99,0).applyMatrix4(all.matrixWorld).project(cam);box.dataset.o=((v.x+1)/2).toFixed(4)+' '+((1-v.y)/2).toFixed(4)}
+if(LAYER=='check'){const P=prof.slice(0,22),rad=y=>{for(let i=1;i<P.length;i++)if(P[i].y>=y){const a=P[i-1],b=P[i];return a.x+(b.x-a.x)*(y-a.y)/(b.y-a.y||1)}return 0};const iv=new T.Matrix4(),w=new T.Vector3();let bad=0,n=0,miny=9;
+for(let t=0;t<60;t+=.37){pose(t);all.updateMatrixWorld(true);iv.copy(all.matrixWorld).invert();base.traverse(o=>{if(!o.isMesh)return;const p=o.geometry.attributes.position;for(let i=0;i<p.count;i++){w.fromBufferAttribute(p,i).applyMatrix4(o.matrixWorld).applyMatrix4(iv);n++;const rr=Math.hypot(w.x,w.z);if(w.y<3.0&&w.y>0&&rr>.47&&rr<=rad(w.y)+.02)bad++;if(rr>.47&&w.y<miny)miny=w.y}})}box.dataset.chk=bad+'/'+n+' miny_out='+miny.toFixed(3)}
 const clk=new T.Clock();let vis=true;new IntersectionObserver(e=>{vis=e[0].isIntersecting}).observe(box);
 (function loop(){if(red){pose(0);r.render(sc,cam);return}requestAnimationFrame(loop);if(!vis||document.hidden)return;pose(clk.getElapsedTime());r.render(sc,cam)})();
 box.classList.add('on');box.dataset.ok=1;
