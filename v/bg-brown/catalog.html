@@ -24,4 +24,4 @@ document.querySelectorAll('[data-fc][data-v]').forEach(()=>{});
 const s=document.querySelector('[data-sort]');if(s)s.onchange=()=>{const g=C[0].parentNode;C.slice().sort((a,b)=>s.value=='up'?a.dataset.p-b.dataset.p:s.value=='down'?b.dataset.p-a.dataset.p:C.indexOf(a)-C.indexOf(b)).forEach(c=>g.appendChild(c))};
 C.forEach(c=>c.querySelectorAll('.sz button').forEach(b=>b.onclick=()=>{c.querySelectorAll('.sz button').forEach(x=>x.classList.remove('on'));b.classList.add('on');c.querySelector('.pr').textContent=Math.round(c.dataset.p*b.dataset.k)+' BYN'}));
 function hs(){const h=location.hash.slice(1);const b=document.querySelector('[data-s="'+h+'"]');if(b){b.click();document.getElementById('cat').scrollIntoView()}}hs();addEventListener('hashchange',hs);
-</script><script src="../../js/kat.js?v=1"></script><script src="cart.js?v=9"></script><script src="../../js/pv.js?v=1"></script></body></html>
+</script><script src="../../js/kat.js?v=1"></script><script src="cart.js?v=10"></script><script src="../../js/pv.js?v=1"></script></body></html>
