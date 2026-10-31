@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ru"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Операционка · AI KVETKA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600&family=Gilda+Display&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="ops.css?v=1">
+</head><body>
+<!-- Черновик операционки AI KVETKA. Данные заказов ДЕМО, всё хранится в localStorage браузера. Каталог берётся из ../js/kat.js. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+ <symbol id="sprig" viewBox="0 0 60 220"><path class="s" d="M30 216 C29 170 27 120 31 70 C33 45 32 25 29 6"/>
+  <path class="l" d="M30 190 Q44 186 47 172 Q33 175 30 190Z"/><path class="l" d="M29.6 165 Q15 162 12 148 Q27 150 29.6 165Z"/>
+  <path class="l" d="M29.4 138 Q44 133 46 118 Q32 122 29.4 138Z"/><path class="l" d="M30 110 Q16 106 14 92 Q28 95 30 110Z"/>
+  <path class="l" d="M31 84 Q44 79 45 66 Q33 70 31 84Z"/><path class="l" d="M31.5 58 Q19 55 18 43 Q30 46 31.5 58Z"/>
+  <path class="l" d="M31 34 Q41 29 41 18 Q32 22 31 34Z"/><circle class="b" cx="29" cy="6" r="3.2"/></symbol>
+</defs></svg>
+<svg class="tw L"><use href="#sprig"/></svg><svg class="tw R"><use href="#sprig"/></svg>
+
+<header class="top">
+ <a class="logo" href="#orders">AI KVETKA <small>операционка</small></a>
+ <nav class="tabs"><a href="#orders" data-t="orders">Заказы</a><a href="#catalog" data-t="catalog">Каталог</a></nav>
+ <span class="demo">демо-данные</span>
+</header>
+
+<main>
+ <section id="v-orders" class="view">
+  <div class="head"><h1>Заказы</h1><p class="sub" id="o-sum"></p></div>
+  <div class="filters" id="o-filters"></div>
+  <div class="tools"><input id="o-q" type="search" placeholder="Поиск: номер, имя, телефон"><select id="o-sort"><option value="when">По времени получения</option><option value="new">Сначала новые</option></select></div>
+  <div class="split"><div class="list" id="o-list"></div><aside class="card" id="o-card"><div class="empty">Выберите заказ слева</div></aside></div>
+ </section>
+
+ <section id="v-catalog" class="view" hidden>
+  <div class="head"><h1>Каталог</h1><p class="sub">Товары из <code>js/kat.js</code>. Правки сохраняются в этом браузере, затем «Скачать kat.js» и замена файла в репозитории.</p></div>
+  <div class="tools"><input id="k-q" type="search" placeholder="Поиск товара"><span class="grow"></span>
+   <button class="btn ghost" id="k-reset">Сбросить правки</button><button class="btn" id="k-export">Скачать kat.js</button></div>
+  <div class="grid" id="k-grid"></div>
+ </section>
+</main>
+
+<div class="modal" id="k-modal" hidden><div class="sheet" role="dialog" aria-modal="true"><button class="x" data-close aria-label="Закрыть">×</button><div id="k-form"></div></div></div>
+<div class="toast" id="toast"></div>
+
+<script src="../js/kat.js?v=3"></script>
+<script src="ops.js?v=1"></script>
+</body></html>
