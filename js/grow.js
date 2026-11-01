@@ -2,10 +2,31 @@
    Стадия считается по Date.now (идёт и в свёрнутой вкладке), анимируются только transform/opacity, при активности всё осыпается пыльцой. */
 (function(){
 if(window.AIK_GROW)return;window.AIK_GROW=1;
-if(!window.requestAnimationFrame||matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+/* Адаптация по мощности. Уровень: 0 полный, 1 минимальный (без лоз и пыльцы, только лёгкие веточки и плавные появления), 2 без анимаций.
+   FPS меряется по rAF окнами ~1 с: на уровне 0 два окна подряд <40 fps -> 1; на уровне 1 два окна подряд <30 fps -> 2.
+   Уровень хранится в sessionStorage (aik-perf). Save-Data -> 2 (не сохраняется). Класс на <html>: perf-min / perf-off. */
+var DE=document.documentElement,LV=0,SK='aik-perf';
+try{LV=Math.min(2,+sessionStorage.getItem(SK)||0)}catch(e){}
+var CN=navigator.connection;if(CN&&CN.saveData)LV=2;
+var pst=document.createElement('style');pst.textContent='html.perf-min #aik-garden,html.perf-min #aik-vines,html.perf-min #aik-pollen,html.perf-off #aik-garden,html.perf-off #aik-vines,html.perf-off #aik-pollen{display:none!important}html.perf-min .sway,html.perf-min .sway img{animation:none!important}html.perf-off *,html.perf-off *::before,html.perf-off *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}';
+document.head.appendChild(pst);
+function papply(){DE.classList.toggle('perf-min',LV==1);DE.classList.toggle('perf-off',LV==2);window.AIK_PERF=LV}
+function setLV(v){if(v<=LV)return;LV=v;try{sessionStorage.setItem(SK,v)}catch(e){}papply();
+ if(raf){clearTimeout(raf);cancelAnimationFrame(raf);raf=0}if(typeof dense!='undefined'&&dense){dense.lay.remove();dense=null}if(pc){pc.remove();pc=null;parts=[]}
+ if(LV==1&&!STRONG)kick()}
+papply();
+if(!window.requestAnimationFrame||matchMedia('(prefers-reduced-motion:reduce)').matches||LV>=2)return;
+var fw={t0:0,n:0,bad:0};
+function meter(ts){if(LV>=2)return;
+ if(document.hidden){fw.t0=0;fw.bad=0}
+ else if(!fw.t0){fw.t0=ts;fw.n=0}
+ else{fw.n++;var dt=ts-fw.t0;if(dt>=1000){var fps=fw.n*1000/dt;window.AIK_FPS=Math.round(fps);fw.t0=ts;fw.n=0;
+  if(dt>4000)fw.bad=0;else if(fps<(LV?30:40)){if(++fw.bad>=2){fw.bad=0;setLV(LV+1)}}else fw.bad=0}}
+ requestAnimationFrame(meter)}
+requestAnimationFrame(meter);
 var q=new URLSearchParams(location.search),IDLE=+q.get('growidle')||50000,FULL=+q.get('growms')||75000;
-var STRONG=q.get('grow')!='light';
-var weak=(navigator.deviceMemory&&navigator.deviceMemory<=2)||(navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=2);
+var STRONG=q.get('grow')!='light'&&LV==0;
+var weak=LV==1||(navigator.deviceMemory&&navigator.deviceMemory<=2)||(navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=2);
 var NS='http://www.w3.org/2000/svg',last=Date.now(),shown=0,decay=null,els=[],sw=[],vis=new Set(),raf=0,parts=[],pc=null,R=Math.random;
 function mk(t,a,p){var e=document.createElementNS(NS,t);for(var k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e}
 function sr(s){return function(){s=(s*9301+49297)%233280;return s/233280}}
@@ -41,7 +62,7 @@ function draw(g,now){var tm=now/1000;
   if(e.k=='l')e.g.setAttribute('transform','translate('+e.x+' '+e.y+') rotate('+e.a+') scale('+(p||.0001)+')');
   else{e.g.setAttribute('transform','translate('+e.x+' '+e.y+') scale('+(p||.0001)+')');e.o.setAttribute('transform','rotate('+(-40*(1-p))+') scale('+(.6+.4*p)+')');e.i.setAttribute('transform','rotate('+(30*(1-p))+') scale('+(.3+.7*p)+')');e.g.style.opacity=p?1:0}}}
 function stage(now){return cl((now-last-IDLE)/FULL)}
-function loop(){raf=0;if(document.hidden)return;var now=Date.now(),g;
+function loop(){raf=0;if(document.hidden||LV>=2)return;var now=Date.now(),g;
  if(decay){var k=cl((now-decay.t)/450);g=decay.g*(1-ease(k));if(k>=1)decay=null}else g=stage(now);
  if(Math.abs(g-shown)>.0005||(g>0&&!weak))draw(g,now);shown=g;
  var busy=pollen(now);
@@ -86,7 +107,7 @@ function buildStrong(){
  lay=document.createElement('div');lay.id='aik-vines';lay.setAttribute('aria-hidden','true');
  lay.style.cssText='position:absolute;left:0;top:0;width:'+W+'px;height:'+H+'px;pointer-events:none;overflow:hidden;z-index:5';
  var svg=mk('svg',{width:W,height:H,'class':'gw tw',style:'position:absolute;left:0;top:0;overflow:visible'});lay.appendChild(svg);
- var T=[['.hm-a',['tr','bl'],1,1],['.wks',['tl','br'],1,1],['.lf',['tr','bl'],1,1],['#onas .im',['tl','br'],1,1],['.rvs,.rv-w,#reviews',['tl'],0,1]];
+ var T=[['.wks',['tl','br'],1,1],['.lf',['tr','bl'],1,1],['.rvs,.rv-w,#reviews',['tl'],0,1]];
  T.forEach(function(r){var L=document.querySelectorAll(r[0]);if(weak&&L.length>3)L=[].slice.call(L,0,3);
   [].forEach.call(L,function(el,ix){var b=el.getBoundingClientRect();if(!b.width||!b.height)return;
    var cs=r[1].length==2&&r[0]=='.cc'?[r[1][ix%2]]:r[1];
@@ -119,7 +140,8 @@ function genDense(){
  document.querySelectorAll('img,.cc,.wks,.hm-a,.ftg,.lf,#onas .im,.rvs,section,footer,.sh').forEach(function(el){var r=el.getBoundingClientRect();if(r.width<60||r.height<40)return;
   var x0=r.left+sx,y0=r.top+sy,x1=r.right+sx,y1=r.bottom+sy;corners.push([x0,y0,1,1],[x1,y0,-1,1],[x0,y1,1,-1],[x1,y1,-1,-1])});
  var ccr=null;document.querySelectorAll('.cc').forEach(function(el){var r=el.getBoundingClientRect();if(!r.width)return;var a=[r.left+sx-12,r.top+sy-12,r.right+sx+12,r.bottom+sy+12];ccr=ccr?[Math.min(ccr[0],a[0]),Math.min(ccr[1],a[1]),Math.max(ccr[2],a[2]),Math.max(ccr[3],a[3])]:a});
- function inCC(x,y){return ccr&&x>ccr[0]&&x<ccr[2]&&y>ccr[1]&&y<ccr[3]}
+ var exr=ccr?[ccr]:[];document.querySelectorAll('.hm-a,#onas .im,img').forEach(function(el){var r=el.getBoundingClientRect();if(r.width<120||r.height<120||el.closest('.cc'))return;exr.push([r.left+sx-12,r.top+sy-12,r.right+sx+12,r.bottom+sy+12])});
+ function inCC(x,y){for(var i=0;i<exr.length;i++){var e=exr[i];if(x>e[0]&&x<e[2]&&y>e[1]&&y<e[3])return true}return false}
  var cc0=document.querySelector('.cc'),cs0=cc0&&(cc0.closest('section')||cc0.parentNode);if(cs0){var q0=cs0.getBoundingClientRect();cats.push([q0.left+sx,q0.top+sy,q0.right+sx,q0.bottom+sy])}
  function vine(x,y,ang,t,N,sw,dep){var dt=.6/(weak?22:30),side=1,wa=ang,wpt=null;
   function nw(){wa+=(R()-.5)*1.6;var d=110+R()*170;wpt=[x+Math.cos(wa)*d,y+Math.sin(wa)*d];if(inCC(wpt[0],wpt[1])){wa+=Math.PI;wpt=[x+Math.cos(wa)*d,y+Math.sin(wa)*d]}
@@ -169,11 +191,11 @@ function burstAt(pts){if(weak||!pts.length)return;if(!pc)pc=document.body.append
  var now=Date.now(),C=['#e3a9c4','#b9a5e3','#e8c77a','#a9bb8f','#f0c8d8'],N=Math.min(50,60-parts.length);
  for(var i=0;i<N;i++){var p=pts[i%pts.length],el=document.createElement('i'),a=R()*Math.PI*2,v=.6+R()*1.8;el.style.background=C[i%5];pc.appendChild(el);
   parts.push({el:el,x:p[0],y:p[1],vx:Math.cos(a)*v,vy:Math.sin(a)*v-1.2,t0:now,life:900+R()*800})}}
-function loopS(){raf=0;if(document.hidden)return;var now=Date.now(),gb=baseG(now);
+function loopS(){raf=0;if(document.hidden||LV>0)return;var now=Date.now(),gb=baseG(now);
  if(!weak||gb<1||!shown){draw(gb,now);shown=gb}
  var g=stage(now);if(g>0&&!dense)genDense();if(dense&&!dense.fall)upDense(g);pollen(now);
  raf=weak?setTimeout(loopS,250):requestAnimationFrame(loopS)}
-function actS(){last=Date.now();if(dense)fallDense();kickS()}
+function actS(){if(LV>0)return;last=Date.now();if(dense)fallDense();kickS()}
 function kickS(){if(!raf)raf=weak?setTimeout(loopS,250):requestAnimationFrame(loopS)}
 function init(){var tws=document.querySelectorAll('svg.tw.L,svg.tw.R');var n=0;
  tws.forEach(function(t){if(t.offsetParent!==null||getComputedStyle(t).display!='none')build(t,n++)});
@@ -183,5 +205,7 @@ function init(){var tws=document.querySelectorAll('svg.tw.L,svg.tw.R');var n=0;
   document.addEventListener('visibilitychange',function(){if(!document.hidden){var g=stage(Date.now());if(g>0&&!dense)genDense();upDense(g,true);kickS()}});kickS();return}
  ['mousemove','scroll','wheel','touchstart','keydown','pointerdown'].forEach(function(ev){addEventListener(ev,act,{passive:true})});
  document.addEventListener('visibilitychange',function(){if(!document.hidden){draw(shown=stage(Date.now()),Date.now());kick()}});kick()}
-if(document.readyState=='loading')document.addEventListener('DOMContentLoaded',init);else init();
+/* старт после load и в idle, чтобы не мешать первой отрисовке */
+function boot(){(window.requestIdleCallback||function(f){setTimeout(f,200)})(init,{timeout:1500})}
+if(document.readyState=='complete')boot();else addEventListener('load',boot);
 })();
