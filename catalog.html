@@ -356,12 +356,12 @@ section:has(.wks) .tw{display:none!important}
 html #top.hm{padding:0 0 26px}
 html #top.hm>svg.tw{display:none!important}
 html #top.hm .hmg{padding:0;gap:22px}
-html #top.hm .hm-a{grid-area:1/1;margin:0;height:calc(100svh - 73px);min-height:540px;max-height:860px;aspect-ratio:auto}
+html #top.hm .hm-a{grid-area:1/1;margin:0;height:680px;height:calc(100svh - 73px);min-height:540px;max-height:860px;aspect-ratio:auto}
 html #top.hm .hm-a:before,html #top.hm .hm-a:after{display:none}
 html #top.hm .hm-a .ar{border-radius:0 0 28px 28px}
 html #top.hm .hm-a .ar img{width:100%;height:100%;object-fit:cover;object-position:55% 35%}
-@keyframes mhz{from{transform:scale(1.09)}to{transform:scale(1)}}
-html.rvjs #top.hm .hm-a.in .ar img{animation:mhz 7s cubic-bezier(.2,.7,.2,1) both}
+/* Фото первого экрана статично: без приближения, сдвигов и переходов; высота по svh не меняется при скрытии панели Safari */
+html #top.hm .hm-a,html.rvjs #top.hm .hm-a,html.rvjs #top.hm .hm-a.in,html #top.hm .hm-a .ar,html #top.hm .hm-a .ar img,html #top.hm .hm-a.in .ar img{opacity:1!important;transform:none!important;translate:none!important;scale:none!important;transition:none!important;animation:none!important}
 @keyframes mhin{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
 html.rvjs #top.hm .hm-t>*{animation:mhin .9s cubic-bezier(.2,.7,.2,1) both}
 html.rvjs #top.hm .hm-t>:nth-child(2){animation-delay:.12s}html.rvjs #top.hm .hm-t>:nth-child(3){animation-delay:.24s}html.rvjs #top.hm .hm-t>:nth-child(4){animation-delay:.36s}
@@ -380,6 +380,9 @@ html #top.hm .cta .kbt.f{background:#f8f4ec;border-color:#f8f4ec;color:#453e5c}
 html #top.hm .cta .kbt.o{background:rgba(248,244,236,.08);border-color:rgba(248,244,236,.55);color:#f8f4ec;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
 html #top.hm .hf{display:grid;grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:minmax(230px,74%);gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding:0 22px;margin:0;padding:2px 22px 6px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 html #top.hm .hf::-webkit-scrollbar{display:none}
+/* Лента преимуществ: только горизонтальный свайп, вертикальный жест прокручивает страницу; плашки без сдвигов и появления по Y */
+html #top.hm .hf{overflow-y:hidden;overscroll-behavior-x:contain;overscroll-behavior-y:auto;touch-action:pan-x pan-y;align-items:stretch;transform:none!important;translate:none!important;transition:none!important;animation:none!important}
+html #top.hm .hf .fi,html.rvjs #top.hm .hf .fi,html.rvjs #top.hm .hf .fi.in,html #top.hm .hf .fi *,html #top.hm .hf .fi:hover,html #top.hm .hf .fi:active{opacity:1!important;transform:none!important;translate:none!important;scale:none!important;transition:none!important;animation:none!important}
 html #top.hm .hf .fi,html #top.hm .hf .fi:last-child{scroll-snap-align:start;border:1px solid var(--ln);border-radius:16px;background:#fffaf3;padding:14px 14px 12px;grid-template-columns:40px minmax(0,1fr)}
 }</style></head><body class="hc hc5 pgb">
 <header><a class="lg" href="index.html">AI KVETKA</a><nav><a href="catalog.html">Каталог</a><a href="preorder.html">Предзаказ</a><a href="delivery.html">Доставка</a><a href="about.html">О нас</a><a href="index.html#reviews">Отзывы</a><a href="#ct">Контакты</a></nav></header>
