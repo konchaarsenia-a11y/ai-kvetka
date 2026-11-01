@@ -4,24 +4,26 @@
 if(window.AIK_GROW)return;window.AIK_GROW=1;
 /* Адаптация по мощности. Уровень: 0 полный, 1 минимальный (без лоз и пыльцы, только лёгкие веточки и плавные появления), 2 без анимаций.
    FPS меряется по rAF окнами ~1 с: на уровне 0 два окна подряд <40 fps -> 1; на уровне 1 два окна подряд <30 fps -> 2.
-   Уровень хранится в sessionStorage (aik-perf). Save-Data -> 2 (не сохраняется). Класс на <html>: perf-min / perf-off. */
-var DE=document.documentElement,LV=0,SK='aik-perf';
-try{LV=Math.min(2,+sessionStorage.getItem(SK)||0)}catch(e){}
+   Окна с длинным кадром (>250 мс: генерация лоз, переключение вкладки) не считаются, нужно 3 плохих окна подряд.
+   Уровень хранится в sessionStorage (aik-lv = 'уровень|время') 15 минут. Save-Data -> 2 (не сохраняется). Класс на <html>: perf-min / perf-off. */
+var DE=document.documentElement,LV=0,SK='aik-lv';
+try{sessionStorage.removeItem('aik-perf');var sv=(sessionStorage.getItem(SK)||'').split('|');if(Date.now()-(+sv[1]||0)<9e5)LV=Math.min(2,+sv[0]||0)}catch(e){}
 var CN=navigator.connection;if(CN&&CN.saveData)LV=2;
 var pst=document.createElement('style');pst.textContent='html.perf-min #aik-garden,html.perf-min #aik-vines,html.perf-min #aik-pollen,html.perf-off #aik-garden,html.perf-off #aik-vines,html.perf-off #aik-pollen{display:none!important}html.perf-min .sway,html.perf-min .sway img{animation:none!important}html.perf-off *,html.perf-off *::before,html.perf-off *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}';
 document.head.appendChild(pst);
 function papply(){DE.classList.toggle('perf-min',LV==1);DE.classList.toggle('perf-off',LV==2);window.AIK_PERF=LV}
-function setLV(v){if(v<=LV)return;LV=v;try{sessionStorage.setItem(SK,v)}catch(e){}papply();
+function setLV(v){if(v<=LV)return;LV=v;try{sessionStorage.setItem(SK,v+'|'+Date.now())}catch(e){}papply();
  if(raf){clearTimeout(raf);cancelAnimationFrame(raf);raf=0}if(typeof dense!='undefined'&&dense){dense.lay.remove();dense=null}if(pc){pc.remove();pc=null;parts=[]}
  if(LV==1&&!STRONG)kick()}
 papply();
 if(!window.requestAnimationFrame||matchMedia('(prefers-reduced-motion:reduce)').matches||LV>=2)return;
-var fw={t0:0,n:0,bad:0};
+var fw={t0:0,n:0,bad:0,lt:0,lg:0};
 function meter(ts){if(LV>=2)return;
  if(document.hidden){fw.t0=0;fw.bad=0}
- else if(!fw.t0){fw.t0=ts;fw.n=0}
- else{fw.n++;var dt=ts-fw.t0;if(dt>=1000){var fps=fw.n*1000/dt;window.AIK_FPS=Math.round(fps);fw.t0=ts;fw.n=0;
-  if(dt>4000)fw.bad=0;else if(fps<(LV?30:40)){if(++fw.bad>=2){fw.bad=0;setLV(LV+1)}}else fw.bad=0}}
+ else if(!fw.t0){fw.t0=ts;fw.n=0;fw.lg=0}
+ else{fw.n++;if(fw.lt&&ts-fw.lt>250)fw.lg=1;var dt=ts-fw.t0;if(dt>=1000){var fps=fw.n*1000/dt;window.AIK_FPS=Math.round(fps);fw.t0=ts;fw.n=0;
+  if(fw.lg||dt>4000){}else if(fps<(LV?24:35)){if(++fw.bad>=3){fw.bad=0;setLV(LV+1)}}else fw.bad=0;fw.lg=0}}
+ fw.lt=document.hidden?0:ts;
  requestAnimationFrame(meter)}
 function mstart(){setTimeout(function(){requestAnimationFrame(meter)},3000)}
 if(document.readyState=='complete')mstart();else addEventListener('load',mstart);
