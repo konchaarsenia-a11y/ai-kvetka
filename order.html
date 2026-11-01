@@ -313,10 +313,23 @@ body{background:var(--bg)}
  .two>div{padding:28px 22px}
  .ftg{grid-template-columns:minmax(0,1fr)}
  .ftg .fi{min-width:0}
+ /* Счётчик штук в карточке каталога: кнопки не сжимаются, цена за штуку строкой ниже */
+ html .qn{flex-wrap:wrap;row-gap:4px}
+ html .qn button{flex:none;width:28px;height:28px}
+ html .qn span{flex:none;min-width:40px}
+ html .qn em{flex-basis:100%;margin-left:0;white-space:nowrap}
 }
 /* Плавный медленный зум фото при наведении (категории, карточки) */
 .cc img,.cd .ph img,.cg a img,.cg button img,.a5g .a5i img{transition:transform .9s ease;will-change:transform;backface-visibility:hidden}
-.cc:hover img,.cd:hover .ph img,.cg a:hover img,.cg button:hover img,.a5g>div:hover .a5i img{transform:scale(1.04)}
+@media(hover:hover){.cc:hover img,.cd:hover .ph img,.cg a:hover img,.cg button:hover img,.a5g>div:hover .a5i img{transform:scale(1.04)}}
+/* Тач: hover не залипает, мягкий отклик при нажатии */
+@media(hover:none){
+html .cc:hover img,html .cd:hover .ph img,html .p5c .cd:hover .ph img,html .cg a:hover img,html .cg button:hover img,html .a5g>div:hover .a5i img,html .a5g>div:hover .im img,html .cc:hover b:after{transform:none}
+html .p5c .cd:hover{transform:none;box-shadow:none}
+html .wpk-r button:hover{transform:none}
+.cc,.cd,.cg a,.cg button{-webkit-tap-highlight-color:transparent}
+html .cc:active img,html .cd:active .ph img,html .p5c .cd:active .ph img,html .cg a:active img,html .cg button:active img{transform:scale(1.03);transition:transform .35s ease}
+}
 /* Появление чуть дольше и заметнее */
 html.rvjs [data-rv]{transform:translateY(30px);transition-duration:1.2s,1.2s}
 html.rvjs [data-rv].in{transform:none}</style></head><body class="hc hc5 pgb">
