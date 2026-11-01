@@ -3,7 +3,7 @@
 (function(){
 if(window.AIK_GROW)return;window.AIK_GROW=1;
 if(!window.requestAnimationFrame||matchMedia('(prefers-reduced-motion:reduce)').matches)return;
-var q=new URLSearchParams(location.search),IDLE=+q.get('growidle')||3000,FULL=+q.get('growms')||25000;
+var q=new URLSearchParams(location.search),IDLE=+q.get('growidle')||50000,FULL=+q.get('growms')||75000;
 var STRONG=q.get('grow')!='light';
 var weak=(navigator.deviceMemory&&navigator.deviceMemory<=2)||(navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=2);
 var NS='http://www.w3.org/2000/svg',last=Date.now(),shown=0,decay=null,els=[],sw=[],vis=new Set(),raf=0,parts=[],pc=null,R=Math.random;
@@ -63,7 +63,7 @@ function act(){var now=Date.now();if(!document.hidden){var g=decay?shown:stage(n
 
 /* Сильный режим: лозы на углах блоков, карточек, фото и у заголовков. Держатся краёв (по getBoundingClientRect), без pointer-events. */
 var lay=null,cel=[];
-function vine(svg,ox,oy,sx,sy,a,b,rnd,t0,big){
+function vine(svg,ox,oy,sx,sy,a,b,rnd,t0,big,np){
  var P=[],N=weak?8:16,i,off=5;
  for(i=0;i<=N;i++){var u=i/N,x,y,L=a+b,d=u*L;
   if(d<a){x=a-d;y=-off}else{x=-off;y=d-a}
@@ -76,7 +76,7 @@ function vine(svg,ox,oy,sx,sy,a,b,rnd,t0,big){
   var tt=t0+i*(.32/N);cel.push({g:sg,x:A[0],y:A[1],a:an,t:tt,d:.5/N+.02,k:'g'});
   if(i%2==1||!weak){var side=(k++%2?1:-1),lf=leaf(g,0,0,0,(12+rnd()*8)*(big?1.25:1));lf.x=A[0];lf.y=A[1];lf.a=an+side*(50+rnd()*25);lf.t=tt+.06;lf.d=.12;lf.k='l';cel.push(lf)}
  }
- var ci=Math.round(N*a/(a+b)),pr=[ci,N];if(!weak)pr.push(Math.max(2,ci-3));
+ var ci=Math.round(N*a/(a+b)),pr=np?[ci]:[];
  pr.forEach(function(j,n){var Q=P[Math.min(N,j)],pe=peony(g,0,0,((n?11:16)+rnd()*6)*(big?1.25:1));pe.x=Q[0];pe.y=Q[1];pe.t=.48+n*.1+rnd()*.1+t0*.3;pe.d=.22;pe.k='p';cel.push(pe)});
  if(!weak)for(i=2;i<N;i+=5){var Q2=P[i],bd=mk('g',{},g);mk('circle',{'class':'gp',r:3.2},bd);cel.push({g:bd,x:Q2[0]+sx*3,y:Q2[1]-sy*3,a:0,t:t0+.3+i*.02,d:.1,k:'l'})}
 }
@@ -86,15 +86,15 @@ function buildStrong(){
  lay=document.createElement('div');lay.id='aik-vines';lay.setAttribute('aria-hidden','true');
  lay.style.cssText='position:absolute;left:0;top:0;width:'+W+'px;height:'+H+'px;pointer-events:none;overflow:hidden;z-index:5';
  var svg=mk('svg',{width:W,height:H,'class':'gw tw',style:'position:absolute;left:0;top:0;overflow:visible'});lay.appendChild(svg);
- var T=[['.hm-a',['tr','bl'],1],['.cc',['tl','tr'],0],['.wks',['tl','br'],1],['.lf',['tr','bl'],1],['#onas .im',['tl','br'],1],['.sh h2,#onas h2',['side'],0],['.rvs,.rv-w,#reviews',['tl'],0]];
+ var T=[['.hm-a',['tr','bl'],1,1],['.wks',['tl','br'],1,1],['.lf',['tr','bl'],1,1],['#onas .im',['tl','br'],1,1],['.rvs,.rv-w,#reviews',['tl'],0,1]];
  T.forEach(function(r){var L=document.querySelectorAll(r[0]);if(weak&&L.length>3)L=[].slice.call(L,0,3);
   [].forEach.call(L,function(el,ix){var b=el.getBoundingClientRect();if(!b.width||!b.height)return;
    var cs=r[1].length==2&&r[0]=='.cc'?[r[1][ix%2]]:r[1];
-   cs.forEach(function(c){var rnd=sr(++n*131+7),t0=.02+rnd()*.4,X=b.left+sx,Y=b.top+sy,mw=Math.min(b.width*.7,260),mh=Math.min(b.height*.75,240);
+   var ci=0;cs.forEach(function(c){var rnd=sr(++n*131+7),t0=.02+rnd()*.4,X=b.left+sx,Y=b.top+sy,mw=Math.min(b.width*.7,260),mh=Math.min(b.height*.75,240);
     if(c=='side'){vine(svg,X-14,Y-6,1,1,0,b.height+30,rnd,t0,0);return}
-    if(c=='tl')vine(svg,X,Y,1,1,mw,mh,rnd,t0,r[2]);
-    if(c=='tr')vine(svg,X+b.width,Y,-1,1,mw,mh,rnd,t0,r[2]);
-    if(c=='bl')vine(svg,X,Y+b.height,1,-1,mw,mh,rnd,t0,r[2]);
+    if(c=='tl')vine(svg,X,Y,1,1,mw,mh,rnd,t0,r[2],r[3]&&(ci++%2==0));
+    if(c=='tr')vine(svg,X+b.width,Y,-1,1,mw,mh,rnd,t0,r[2],r[3]&&(ci++%2==0));
+    if(c=='bl')vine(svg,X,Y+b.height,1,-1,mw,mh,rnd,t0,r[2],r[3]&&(ci++%2==0));
     if(c=='br')vine(svg,X+b.width,Y+b.height,-1,-1,mw,mh,rnd,t0,r[2])})})});
  document.body.appendChild(lay);els=els.concat(cel);cel.forEach(function(e){e._p=-1});draw(shown,Date.now())}
 
@@ -113,31 +113,34 @@ function vleaf(p,L,col){mk('path',{'class':'vl',fill:col,d:'M0 0C'+L*.28+' '+(-L
 function tendril(p,s){var d='M0 0C'+6*s+' '+(-1*s)+' '+11*s+' '+(-6*s)+' '+9*s+' '+(-11*s)+'C'+7*s+' '+(-15*s)+' '+2*s+' '+(-13*s)+' '+4*s+' '+(-9*s)+'C'+5*s+' '+(-7*s)+' '+7*s+' '+(-8*s)+' '+6.5*s+' '+(-10*s);mk('path',{'class':'td',d:d},p)}
 /* лозы по всей странице: старты равномерно по сетке (края, углы блоков, секции сверху донизу), каждая лоза тянется в своём направлении от старта, без общего центра */
 function genDense(){
- var de=document.documentElement,W=de.clientWidth,H=Math.max(de.scrollHeight,document.body.scrollHeight),sy=scrollY,sx=scrollX,lay=document.createElement('div');lay.id='aik-garden';lay.setAttribute('aria-hidden','true');lay.style.width=W+'px';lay.style.height=H+'px';
+ var de=document.documentElement,W=de.clientWidth,H=Math.max(de.scrollHeight,document.body.scrollHeight),VH=innerHeight,sy=scrollY,sx=scrollX,lay=document.createElement('div');lay.id='aik-garden';lay.setAttribute('aria-hidden','true');lay.style.width=W+'px';lay.style.height=H+'px';
  var svg=mk('svg',{width:W,height:H,viewBox:'0 0 '+W+' '+H,'class':'gw'},lay);dense={lay:lay,e:[],n:0};
- var CS=weak?620:340,LIM=weak?700:5200,cnt=0,corners=[];
+ var Y0=Math.max(0,sy-30),Y1=Math.min(H,sy+VH+30),CS=weak?600:320,LIM=weak?500:2600,cats=[],cnt=0,corners=[];
  document.querySelectorAll('img,.cc,.wks,.hm-a,.ftg,.lf,#onas .im,.rvs,section,footer,.sh').forEach(function(el){var r=el.getBoundingClientRect();if(r.width<60||r.height<40)return;
   var x0=r.left+sx,y0=r.top+sy,x1=r.right+sx,y1=r.bottom+sy;corners.push([x0,y0,1,1],[x1,y0,-1,1],[x0,y1,1,-1],[x1,y1,-1,-1])});
+ var ccr=null;document.querySelectorAll('.cc').forEach(function(el){var r=el.getBoundingClientRect();if(!r.width)return;var a=[r.left+sx-12,r.top+sy-12,r.right+sx+12,r.bottom+sy+12];ccr=ccr?[Math.min(ccr[0],a[0]),Math.min(ccr[1],a[1]),Math.max(ccr[2],a[2]),Math.max(ccr[3],a[3])]:a});
+ function inCC(x,y){return ccr&&x>ccr[0]&&x<ccr[2]&&y>ccr[1]&&y<ccr[3]}
+ var cc0=document.querySelector('.cc'),cs0=cc0&&(cc0.closest('section')||cc0.parentNode);if(cs0){var q0=cs0.getBoundingClientRect();cats.push([q0.left+sx,q0.top+sy,q0.right+sx,q0.bottom+sy])}
  function vine(x,y,ang,t,N,sw,dep){var dt=.6/(weak?22:30),side=1,wa=ang,wpt=null;
-  function nw(){wa+=(R()-.5)*1.6;var d=110+R()*170;wpt=[x+Math.cos(wa)*d,y+Math.sin(wa)*d];
-   if(wpt[0]<20||wpt[0]>W-20){wa=Math.PI-wa;wpt[0]=Math.min(W-20,Math.max(20,wpt[0]))}if(wpt[1]<20||wpt[1]>H-20){wa=-wa;wpt[1]=Math.min(H-20,Math.max(20,wpt[1]))}}
+  function nw(){wa+=(R()-.5)*1.6;var d=110+R()*170;wpt=[x+Math.cos(wa)*d,y+Math.sin(wa)*d];if(inCC(wpt[0],wpt[1])){wa+=Math.PI;wpt=[x+Math.cos(wa)*d,y+Math.sin(wa)*d]}
+   if(wpt[0]<20||wpt[0]>W-20){wa=Math.PI-wa;wpt[0]=Math.min(W-20,Math.max(20,wpt[0]))}if(wpt[1]<Y0+20||wpt[1]>Y1-20){wa=-wa;wpt[1]=Math.min(Y1-20,Math.max(Y0+20,wpt[1]))}}
   nw();
   for(var i=0;i<N&&cnt<LIM*1.3;i++){
    var want=Math.atan2(wpt[1]-y,wpt[0]-x),df=Math.atan2(Math.sin(want-ang),Math.cos(want-ang));
    ang+=Math.max(-.3,Math.min(.3,df*.3))+(R()-.5)*.35+.18*Math.sin(i*.45+dep);
    if(Math.hypot(wpt[0]-x,wpt[1]-y)<35)nw();
-   var st=13+R()*5,nx=x+Math.cos(ang)*st,ny=y+Math.sin(ang)*st,ad=ang*180/Math.PI;
+   var st=13+R()*5,nx=x+Math.cos(ang)*st,ny=y+Math.sin(ang)*st,ad=ang*180/Math.PI;if(inCC(x,y)||inCC(nx,ny))return;
    mk('path',{'class':'st',d:'M0 0Q'+(st/2).toFixed(1)+' '+((R()-.5)*4).toFixed(1)+' '+(st+1).toFixed(1)+' 0','stroke-width':sw.toFixed(2)},dn(svg,x,y,ad,t,'s'));cnt++;
    side=-side;var L=(dep?17:22)+R()*(dep?10:14);
    if(R()<.9){vleaf(dn(svg,x+Math.cos(ang)*st*.6,y+Math.sin(ang)*st*.6,ad+side*(40+R()*35),t+dt*1.5,'l'),L,GCOL[(R()*GCOL.length)|0]);cnt++}
    if(!weak&&R()<.5){vleaf(dn(svg,x+Math.cos(ang)*st*.3,y+Math.sin(ang)*st*.3,ad-side*(45+R()*40),t+dt*2.2,'l'),L*(.75+R()*.3),GCOL[(R()*GCOL.length)|0]);cnt++}
    if(!weak&&R()<.12){var tg2=dn(svg,nx,ny,ad-side*(30+R()*40),t+dt*2,'d');tendril(side<0?mk('g',{transform:'scale(1,-1)'},tg2):tg2,.7+R()*.6);cnt++}
-   if(R()<(dep?.025:.018)){blossom(dn(svg,nx,ny,R()*360,t+dt*3,'f'),5+R()*4,R()<.25);cnt++}
+   if(R()<(dep?.008:.006)&&!cats.some(function(c){return nx>c[0]&&nx<c[2]&&ny>c[1]&&ny<c[3]})){blossom(dn(svg,nx,ny,R()*360,t+dt*3,'f'),5+R()*4,R()<.25);cnt++}
    if(dep<2&&i>3&&R()<(dep?.08:.13))vine(nx,ny,ang+side*(.7+R()*.6),t+dt,Math.round((N-i)*(.45+R()*.4)),sw*.75,dep+1);
    x=nx;y=ny;t+=dt;sw=Math.max(.7,sw*.985)}}
  /* сетка ячеек: в каждой одна лоза — от угла блока в ячейке, иначе от края страницы, иначе из случайной точки; направление случайное, с уклоном от ближайшего края внутрь */
- var cols=Math.max(2,Math.round(W/CS)),rows=Math.max(2,Math.round(H/CS)),cw=W/cols,ch=H/rows,starts=[];
- for(var r=0;r<rows;r++)for(var c=0;c<cols;c++){var x0=c*cw,y0=r*ch,inC=corners.filter(function(p){return p[0]>=x0&&p[0]<x0+cw&&p[1]>=y0&&p[1]<y0+ch}),sx0,sy0,an;
+ var cols=Math.max(2,Math.round(W/CS)),rows=Math.max(2,Math.round((Y1-Y0)/CS)),cw=W/cols,ch=(Y1-Y0)/rows,starts=[];
+ for(var r=0;r<rows;r++)for(var c=0;c<cols;c++){var x0=c*cw,y0=Y0+r*ch,inC=corners.filter(function(p){return p[0]>=x0&&p[0]<x0+cw&&p[1]>=y0&&p[1]<y0+ch}),sx0,sy0,an;
   if(inC.length&&R()<.75){var p=inC[(R()*inC.length)|0];sx0=p[0];sy0=p[1];an=Math.atan2(p[3],p[2])+(R()-.5)*1.6}
   else if(c==0||c==cols-1){sx0=c?W+4:-4;sy0=y0+R()*ch;an=(c?Math.PI:0)+(R()-.5)*1.4}
   else{sx0=x0+R()*cw;sy0=y0+R()*ch;an=R()*Math.PI*2}
@@ -147,7 +150,7 @@ function genDense(){
  starts.forEach(function(s){vine(s[0],s[1],s[2],R()*.15,NS,2.3+R()*.9,0)});
  dense.e.sort(function(a,b){return a.t-b.t});
  if(dense.e.length>LIM)dense.e.splice(LIM).forEach(function(e){e.i.parentNode.remove()});
- var mt=dense.e.length?dense.e[dense.e.length-1].t:1;if(mt>.97)dense.e.forEach(function(e){e.t*=.97/mt});
+ var mt=dense.e.length?dense.e[dense.e.length-1].t:1;dense.e.forEach(function(e){e.t*=.62/mt});
  document.body.appendChild(lay)}
 function upDense(g,instant){if(!dense||dense.fall)return;var e=dense.e,n=dense.n;if(n>=e.length||e[n].t>g)return;
  if(instant)dense.lay.classList.add('nt');
