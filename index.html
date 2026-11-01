@@ -365,6 +365,12 @@ html #top.hm .hf::-webkit-scrollbar{display:none}
 html #top.hm .hf{overflow-y:hidden;overscroll-behavior-x:contain;overscroll-behavior-y:auto;touch-action:pan-x pan-y;align-items:stretch;transform:none!important;translate:none!important;transition:none!important;animation:none!important}
 html #top.hm .hf .fi,html.rvjs #top.hm .hf .fi,html.rvjs #top.hm .hf .fi.in,html #top.hm .hf .fi *,html #top.hm .hf .fi:hover,html #top.hm .hf .fi:active{opacity:1!important;transform:none!important;translate:none!important;scale:none!important;transition:none!important;animation:none!important}
 html #top.hm .hf .fi,html #top.hm .hf .fi:last-child{scroll-snap-align:start;border:1px solid var(--ln);border-radius:16px;background:#fffaf3;padding:14px 14px 12px;grid-template-columns:40px minmax(0,1fr)}
+}
+/* Цветок недели: рисунок меньше (около трети экрана), по центру */
+@media(max-width:800px){
+html .wks .wkp,html .hc5 .wks .wkp{height:200px;height:clamp(170px,25svh,215px);width:100%;max-width:300px;margin:0 auto 2px;justify-self:center}
+html .wks .wkp .stage{inset:4px 0 2px}
+html .hc5 .wks .wkp:before{width:0;height:0;margin:0;transform:translate(-50%,-50%);width:clamp(150px,22svh,186px);height:clamp(150px,22svh,186px)}
 }</style></head><body class="hc hc5">
 <header><a class="lg" href="#">AI KVETKA</a><nav><a href="catalog.html">Каталог</a><a href="preorder.html">Предзаказ</a><a href="delivery.html">Доставка</a><a href="about.html">О нас</a><a href="#reviews">Отзывы</a><a href="#ct">Контакты</a></nav></header>
 <section class="sec hm" id="top">
