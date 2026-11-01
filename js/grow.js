@@ -110,7 +110,7 @@ function buildStrong(){
  lay=document.createElement('div');lay.id='aik-vines';lay.setAttribute('aria-hidden','true');
  lay.style.cssText='position:absolute;left:0;top:0;width:'+W+'px;height:'+H+'px;pointer-events:none;overflow:hidden;z-index:5';
  var svg=mk('svg',{width:W,height:H,'class':'gw tw',style:'position:absolute;left:0;top:0;overflow:visible'});lay.appendChild(svg);
- var T=[['.wks',['tl','br'],1,1],['.lf',['tr','bl'],1,1],['.rvs,.rv-w,#reviews',['tl'],0,1]];
+ var T=[['.lf',['tr','bl'],1,1],['.rvs,.rv-w,#reviews',['tl'],0,1]];
  T.forEach(function(r){var L=document.querySelectorAll(r[0]);if(weak&&L.length>3)L=[].slice.call(L,0,3);
   [].forEach.call(L,function(el,ix){var b=el.getBoundingClientRect();if(!b.width||!b.height)return;
    var cs=r[1].length==2&&r[0]=='.cc'?[r[1][ix%2]]:r[1];
@@ -144,6 +144,9 @@ function genDense(){
   var x0=r.left+sx,y0=r.top+sy,x1=r.right+sx,y1=r.bottom+sy;corners.push([x0,y0,1,1],[x1,y0,-1,1],[x0,y1,1,-1],[x1,y1,-1,-1])});
  var ccr=null;document.querySelectorAll('.cc').forEach(function(el){var r=el.getBoundingClientRect();if(!r.width)return;var a=[r.left+sx-12,r.top+sy-12,r.right+sx+12,r.bottom+sy+12];ccr=ccr?[Math.min(ccr[0],a[0]),Math.min(ccr[1],a[1]),Math.max(ccr[2],a[2]),Math.max(ccr[3],a[3])]:a});
  var exr=ccr?[ccr]:[];document.querySelectorAll('.hm-a,#onas .im,img').forEach(function(el){var r=el.getBoundingClientRect();if(r.width<120||r.height<120||el.closest('.cc'))return;exr.push([r.left+sx-12,r.top+sy-12,r.right+sx+12,r.bottom+sy+12])});
+ /* блок «Цветок недели»: без лоз и цветов по всей ширине */
+ var nz=[];document.querySelectorAll('.wks').forEach(function(el){var q=(el.closest('section')||el).getBoundingClientRect();if(q.height)nz.push([q.top+sy-24,q.bottom+sy+24])});
+ function inNZ(y){for(var i=0;i<nz.length;i++)if(y>nz[i][0]&&y<nz[i][1])return true;return false}
  function inCC(x,y){for(var i=0;i<exr.length;i++){var e=exr[i];if(x>e[0]&&x<e[2]&&y>e[1]&&y<e[3])return true}return false}
  var cc0=document.querySelector('.cc'),cs0=cc0&&(cc0.closest('section')||cc0.parentNode);if(cs0){var q0=cs0.getBoundingClientRect();cats.push([q0.left+sx,q0.top+sy,q0.right+sx,q0.bottom+sy])}
  function vine(x,y,ang,t,N,sw,dep){var dt=.6/(weak?22:30),side=1,wa=ang,wpt=null;
@@ -157,6 +160,7 @@ function genDense(){
    if(Math.hypot(wpt[0]-x,wpt[1]-y)<35)nw();
    var st=(13+R()*5)*LS,nx=x+Math.cos(ang)*st,ny=y+Math.sin(ang)*st;
    if(NAR&&nx>BD&&nx<W-BD){ang=Math.PI-ang;nx=x+Math.cos(ang)*st;if(nx>BD+6&&nx<W-BD-6)return}
+   if(inNZ(y)||inNZ(ny))return;
    var ad=ang*180/Math.PI;if(!NAR&&(inCC(x,y)||inCC(nx,ny)))return;
    mk('path',{'class':'st',d:'M0 0Q'+(st/2).toFixed(1)+' '+((R()-.5)*4).toFixed(1)+' '+(st+1).toFixed(1)+' 0','stroke-width':sw.toFixed(2)},dn(svg,x,y,ad,t,'s'));cnt++;
    side=-side;var L=((dep?17:22)+R()*(dep?10:14))*LS;
