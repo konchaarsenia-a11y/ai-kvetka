@@ -41,7 +41,9 @@ window.AIK_QSL=function(o){
   else if(e.key=='PageUp'){for(i=0;i<L&&M[i]<=v;i++);if(i<L)set(M[i],true);e.preventDefault()}
   else if(e.key=='PageDown'){for(i=L-1;i>=0&&M[i]>=v;i--);if(i>=0)set(M[i],true);e.preventDefault()}});
  draw();
- return {el:el,set:function(x){set(x,true,true)},get:function(){return v},color:function(a,t){if(a)el.style.setProperty('--a',a);if(t)el.style.setProperty('--t',t)}};
+ var api={el:el,set:function(x){set(x,true,true)},get:function(){return v},color:function(a,t){if(a)el.style.setProperty('--a',a);if(t)el.style.setProperty('--t',t)},
+  /* для поля ввода количества (каталог): установить с вызовом onChange, чтобы цена и корзина пересчитались */
+  pick:function(x){set(x,true)},max:mx};el._aik=api;return api;
 };
 /* Плавная смена числа (цена/количество). */
 window.AIK_TWEEN=function(e,to,fmt){var fr=e._v==null?to:e._v,t0=performance.now(),D=380;e._v=to;cancelAnimationFrame(e._r);
