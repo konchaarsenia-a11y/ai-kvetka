@@ -5,7 +5,7 @@
 <title>Операционка · AI KVETKA</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600&family=Gilda+Display&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="ops.css?v=1">
+<link rel="stylesheet" href="ops.css?v=5">
 </head><body>
 <!-- Черновик операционки AI KVETKA. Данные заказов ДЕМО, всё хранится в localStorage браузера. Каталог берётся из ../js/kat.js. -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
@@ -19,7 +19,7 @@
 
 <header class="top">
  <a class="logo" href="#orders">AI KVETKA <small>операционка</small></a>
- <nav class="tabs"><a href="#orders" data-t="orders">Заказы</a><a href="#catalog" data-t="catalog">Каталог</a></nav>
+ <nav class="tabs"><a href="#orders" data-t="orders">Заказы</a><a href="#catalog" data-t="catalog">Каталог</a><a href="#stats" data-t="stats">Статистика</a></nav>
  <span class="demo">демо-данные</span>
 </header>
 
@@ -37,11 +37,20 @@
    <button class="btn ghost" id="k-reset">Сбросить правки</button><button class="btn" id="k-export">Скачать kat.js</button></div>
   <div class="grid" id="k-grid"></div>
  </section>
+
+ <section id="v-stats" class="view" hidden>
+  <div class="head"><h1>Статистика</h1></div>
+  <nav class="subtabs"><a href="#stats" data-s="m">Метрики</a><a href="#stats/cost" data-s="c">Себестоимость</a></nav>
+  <div id="s-m"><p class="sub">По заказам из этого браузера (дата оформления). Отменённые не входят в выручку и средний чек.</p>
+   <div class="filters" id="s-per"></div><div id="s-body"></div></div>
+  <div id="s-c" hidden><p class="sub">Внутренние данные: хранятся только в этом браузере, в публичный kat.js не попадают. Перенос на другое устройство — через ops-cost.json. Любая смена цены цветка, упаковки или ЗП сразу пересчитывает все букеты.</p>
+   <div id="s-costv"></div></div>
+ </section>
 </main>
 
 <div class="modal" id="k-modal" hidden><div class="sheet" role="dialog" aria-modal="true"><button class="x" data-close aria-label="Закрыть">×</button><div id="k-form"></div></div></div>
 <div class="toast" id="toast"></div>
 
 <script src="../js/kat.js?v=3"></script>
-<script src="ops.js?v=1"></script>
+<script src="ops.js?v=5"></script>
 </body></html>
