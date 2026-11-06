@@ -19,7 +19,7 @@ var TR='a b v g d e zh z i y k l m n o p r s t u f h c ch sh sch  y  e yu ya'.sp
 function slug(n){return String(n).toLowerCase().replace(/[а-яё]/g,function(c){var i=c=='ё'?5:c.charCodeAt(0)-1072;return TR[i]||''}).replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'cat'}
 function P(id){return O.prod(id)}
 function th(u){return u?'style="background-image:url(\''+esc(O.img(u))+'\')"':''}
-function pr(p){return p?(p.st?'от '+Math.min.apply(null,Object.keys(p.st).map(function(k){return p.st[k]}))+' BYN/шт.':O.basePrice(p)+' BYN'):''}
+function pr(p){if(!p)return '';if(p.st&&typeof p.st=='object'){var vals=Object.keys(p.st).map(function(k){return +p.st[k]}).filter(function(n){return isFinite(n)});return vals.length?'от '+Math.min.apply(null,vals)+' BYN/шт.':O.basePrice(p)+' BYN'}return O.basePrice(p)+' BYN'}
 function match(p,q){q=q.trim().toLowerCase();return !q||(p.n+' '+(p.cm||'')+' '+(p.c||'')).toLowerCase().indexOf(q)>=0}
 var wq='',bq='';
 
@@ -88,7 +88,7 @@ V.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)re
  else if(b.dataset.ce)openC(+b.dataset.ce);else if(b.hasAttribute('data-cnew'))openC(-1);
  else if(b.dataset.bind){var a=b.dataset.bind.split('|'),c=s.cats[+a[1]],j=c.ids.indexOf(a[0]);j<0?c.ids.push(a[0]):c.ids.splice(j,1);save();b.classList.toggle('on',j<0);
   var sm=document.querySelector('#h-cl li[data-c="'+a[1]+'"] small');if(sm)sm.textContent=c.sub+' · '+c.ids.length+' тов. · #'+c.s}});
-function fill(p){if(!p)return;var k=st().wk;k.h=p.n;k.t=p.d||p.cm||'';if(p.st){var m=Math.min.apply(null,Object.keys(p.st).map(function(x){return p.st[x]}));k.p=m;k.q='за шт.'}else{k.p=O.basePrice(p);k.q=''}}
+function fill(p){if(!p)return;var k=st().wk;k.h=p.n;k.t=p.d||p.cm||'';if(typeof p.st=='number'){k.p=+p.st;k.q='за шт.'}else if(p.st&&typeof p.st=='object'){var vals=Object.keys(p.st).map(function(x){return +p.st[x]}).filter(function(n){return isFinite(n)});k.p=vals.length?Math.min.apply(null,vals):O.basePrice(p);k.q='за шт.'}else{k.p=O.basePrice(p);k.q=''}}
 M.addEventListener('input',function(e){var t=e.target;if(!D)return;if(t.id=='h-mq'){mq=t.value;drawML()}else if(t.dataset.d)D[t.dataset.d]=t.value});
 M.addEventListener('change',function(e){var t=e.target;if(!D)return;
  if(t.dataset.dp){var j=D.ids.indexOf(t.dataset.dp);t.checked?j<0&&D.ids.push(t.dataset.dp):j>=0&&D.ids.splice(j,1);t.closest('label').classList.toggle('on',t.checked);$('#h-dn').textContent=D.ids.length;
