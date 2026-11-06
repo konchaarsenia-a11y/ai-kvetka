@@ -9,7 +9,7 @@ var SN={};ST.forEach(function(s){SN[s[0]]=s[1]});
 var PAY=[['card','Карта'],['erip','ЕРИП'],['qr','QR'],['cash','Наличные']];
 var PN={};PAY.forEach(function(p){PN[p[0]]=p[1]});
 var PACK=10,ENV=4,MIN_ORDER=50,DLV_MINSK=15; // упаковка 10 BYN/букет; конверт 4; мин. заказ 50; Минск 15
-var LIVE0=['sharmelia','alstro-white','alstro-pink','rose-explorer','rose-red-fr','rose-mondial','rose-white-fr','rose-pink-fr','rose-veggie','rose-pink-x','rose-fatima','rose-mandatin','rose-melon','eustoma-pink','eustoma-white','ilex-yellow','ilex-red','nutan','eringium','chrys-altai','orchid-vanda','orchid-white-70','orchid-pink-70','anthurium-jumbo','zami-10'];
+var LIVE0=['sharmelia','alstro-white','alstro-pink','rose-explorer','rose-red-fr','rose-mondial','rose-white-fr','rose-pink-fr','rose-veggie','rose-pink-x','rose-fatima','rose-mandatin','rose-melon','eustoma-pink','eustoma-white','ilex-yellow','ilex-red','nutan','eringium','chrys-altai','orchid-vanda','orchid-white-70','orchid-pink-70','anthurium-jumbo','zami-10']; // не витрина: только узнать старый демо-live в правках
 var SLOTS=(function(){var a=[];for(var h=9;h<21;h++){var a1=(h<10?'0':'')+h+':00',a2=((h+1)<10?'0':'')+(h+1)+':00';a.push(a1+'–'+a2)}return a})();
 var LS={get:function(k,d){try{var v=JSON.parse(localStorage.getItem(k));return v==null?d:v}catch(e){return d}},set:function(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){toast('Не хватает места в браузере (фото слишком большое?)');return false}}};
 function toast(t){var e=$('#toast');e.textContent=t;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(function(){e.classList.remove('on')},2200)}
@@ -40,7 +40,12 @@ function unitPrice(p){ // цена за шт./ветку/пучок/горшок
  if(p.price!=null)return +p.price;
  return 0}
 function isPot(p){return p.c=='Растения'||p.care=='pot'||p.u=='горшок'}
-function isLive(p){var e=edits()[p.id];if(e&&e.live!=null)return !!e.live;if(p.live!=null)return !!p.live;return LIVE0.indexOf(p.id)>=0}
+function isLive(p){var e=edits()[p.id];if(e&&e.live!=null)return !!e.live;return p.live===true} // «на сайте» = явный live:true в kat.js; нет флага — скрыт
+function seededLive(p){return p.live!=null?!!p.live:LIVE0.indexOf(p.id)>=0}
+function migrateLive(){ // один раз снять демо-live, совпавший со старым списком; осознанный переключатель оставить
+ if(LS.get('aik_ops_live_mig',null))return;var E=edits(),ch=false;
+ Object.keys(E).forEach(function(id){var e=E[id];if(!e||e.live==null)return;var p=null;KAT.forEach(function(x){if(x.id==id)p=x});if(!p||!!e.live!==seededLive(p))return;delete e.live;ch=true;if(!Object.keys(e).length)delete E[id]});
+ if(!ch||LS.set('aik_ops_kat',E))LS.set('aik_ops_live_mig',1)}
 function heightOf(p){var e=edits()[p.id];if(e&&e.h!=null&&e.h!=='')return e.h;if(p.h)return p.h;var m=String(p.n||'').match(/(\d+\s*\/\s*\d+\s*см|\d+\s*см)/i);return m?m[1]:''}
 function careOf(p){var e=edits()[p.id];if(e&&e.care)return e.care;if(p.care=='pot')return 'pot';if(p.care=='composition'||p.care=='bouquet')return p.care;return isPot(p)?'pot':'bouquet'}
 function prod(id){var p=null;KAT.forEach(function(x){if(x.id==id)p=x});if(!p)return null;var e=edits()[id]||{},o={};for(var k in p)o[k]=p[k];
@@ -201,7 +206,8 @@ $('#k-live').onclick=function(e){var b=e.target.closest('[data-live]');if(!b)ret
 $('#k-modal').onclick=function(e){if(e.target==this||e.target.closest('[data-close]')){this.hidden=true;return}var d=e.target.closest('[data-del]');if(d){if(curPh.length<2){toast('Нужно оставить хотя бы одно фото');return}curPh.splice(+d.dataset.del,1);drawPh()}};
 $('#k-modal').onchange=function(e){if(e.target.id=='f-file'&&e.target.files[0])shrink(e.target.files[0],function(u){curPh.push(u);drawPh();toast('Фото добавлено в конец — не забудьте «Сохранить»')})};
 $('#k-modal').onsubmit=function(e){e.preventDefault();var f=e.target,E=edits(),o=KAT.filter(function(x){return x.id==cur})[0];
- E[cur]={n:f.n.value.trim()||o.n,price:f.p.value,cm:f.cm.value.trim(),d:f.d.value.trim(),h:f.h.value.trim(),live:!!f.live.checked};
+ E[cur]={n:f.n.value.trim()||o.n,price:f.p.value,cm:f.cm.value.trim(),d:f.d.value.trim(),h:f.h.value.trim()};
+ if(!!f.live.checked!==(o.live===true))E[cur].live=!!f.live.checked; // в правки только отличие от kat.js
  if(f.care)E[cur].care=f.care.value;if(curPh.join('|')!=(o.ph||[]).join('|'))E[cur].ph=curPh;
  if(LS.set('aik_ops_kat',E)){$('#k-modal').hidden=true;renderKat();toast('Сохранено в этом браузере')}};
 $('#k-reset').onclick=function(){if(confirm('Сбросить все правки каталога в этом браузере?')){localStorage.removeItem('aik_ops_kat');renderKat();toast('Правки сброшены')}};
@@ -326,5 +332,6 @@ function route(){$('#k-modal').hidden=true;if(window.OPS_HOME)OPS_HOME.close();a
 window.addEventListener('hashchange',route);
 $('#role-sw').onclick=function(e){var b=e.target.closest('[data-role]');if(!b)return;LS.set('aik_ops_role',b.dataset.role);toast(b.dataset.role=='owner'?'Роль: владелец':'Роль: флорист (только заказы)');route()};
 if(!KAT.length){toast('Каталог не загрузился — проверьте ../js/kat.js');console.warn('AIK_KAT empty')}
+migrateLive();
 route();
 })();
