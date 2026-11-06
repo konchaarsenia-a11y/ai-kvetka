@@ -5,7 +5,7 @@
 <title>Операционка · AI KVETKA</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600&family=Gilda+Display&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="ops.css?v=5">
+<link rel="stylesheet" href="ops.css?v=6">
 </head><body>
 <!-- Черновик операционки AI KVETKA. Данные заказов ДЕМО, всё хранится в localStorage браузера. Каталог берётся из ../js/kat.js. -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
@@ -32,7 +32,7 @@
  </section>
 
  <section id="v-catalog" class="view" hidden>
-  <div class="head"><h1>Каталог</h1><p class="sub">Товары из <code>js/kat.js</code>. Правки сохраняются в этом браузере, затем «Скачать kat.js» и замена файла в репозитории.</p></div>
+  <div class="head"><h1>Каталог</h1><p class="sub">Все товары из <code>js/kat.js</code>. Пометка «витрина» — то, что видно на сайте; остальные остаются здесь. Правки сохраняются в этом браузере, затем «Скачать kat.js» и замена файла в репозитории.</p></div>
   <div class="tools"><input id="k-q" type="search" placeholder="Поиск товара"><span class="grow"></span>
    <button class="btn ghost" id="k-reset">Сбросить правки</button><button class="btn" id="k-export">Скачать kat.js</button></div>
   <div class="grid" id="k-grid"></div>
@@ -51,6 +51,6 @@
 <div class="modal" id="k-modal" hidden><div class="sheet" role="dialog" aria-modal="true"><button class="x" data-close aria-label="Закрыть">×</button><div id="k-form"></div></div></div>
 <div class="toast" id="toast"></div>
 
-<script src="../js/kat.js?v=3"></script>
-<script src="ops.js?v=5"></script>
+<script src="../js/kat.js?v=9"></script>
+<script src="ops.js?v=6"></script>
 </body></html>

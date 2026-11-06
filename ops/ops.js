@@ -40,9 +40,10 @@ function demoHist(){var seed=7,R=function(){seed=(seed*16807)%2147483647;return 
 var orders=LS.get('aik_ops_orders_v3',null);if(!orders){orders=demo().concat(demoHist());LS.set('aik_ops_orders_v3',orders)}
 orders.forEach(function(o){if(o.st=='ship')o.st='ready'}); // миграция старого статуса «Доставка» → «Готов»
 function saveO(){LS.set('aik_ops_orders',orders)}
-function line(it){var p=prod(it.id)||{n:it.id,ph:[],price:0},k={S:.8,M:1,L:1.3}[it.s]||1,mono=p.st&&p.st[it.s]!=null;
- var unit=mono?p.st[it.s]:(p.sz&&p.sz[it.s]&&p.sz[it.s].p)||Math.round(p.price*k),qty=mono?1:it.q,sum=mono?unit*it.q:unit*it.q;
- return{p:p,label:mono?('Размер '+it.s+' · '+it.q+' шт. × '+money(unit)+' BYN'):('Размер '+it.s+(window.AIK_COMP?' · '+window.AIK_COMP(p,it.s):'')+(it.q>1?' · ×'+it.q:'')),sum:sum,qty:qty}}
+function line(it){var p=prod(it.id)||{n:it.id,ph:[],price:0},k={S:.8,M:1,L:1.3}[it.s]||1,flat=typeof p.st=='number',mono=!flat&&p.st&&p.st[it.s]!=null;
+ var unit=flat?p.st:(mono?p.st[it.s]:(p.sz&&p.sz[it.s]&&p.sz[it.s].p)||Math.round((p.price||0)*k)),qty=(flat||mono)?1:it.q,sum=unit*(it.q||1);
+ var un=(p.u||'шт.');
+ return{p:p,label:flat?(it.q+' '+un+' × '+money(unit)+' BYN'):(mono?('Размер '+it.s+' · '+it.q+' шт. × '+money(unit)+' BYN'):('Размер '+it.s+(window.AIK_COMP?' · '+window.AIK_COMP(p,it.s):'')+(it.q>1?' · ×'+it.q:''))),sum:sum,qty:qty}}
 function total(o){return o.items.reduce(function(a,it){return a+line(it).sum},0)+(o.dlv||0)}
 function fmtD(t){var d=new Date(t),t0=new Date();t0.setHours(0,0,0,0);var df=Math.round((new Date(d).setHours(0,0,0,0)-t0)/864e5);
  return df==0?'Сегодня':df==1?'Завтра':df==-1?'Вчера':d.toLocaleDateString('ru-RU',{day:'numeric',month:'long'})}
@@ -199,7 +200,7 @@ CV.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)r
 CV.addEventListener('toggle',function(e){var t=e.target;if(t.dataset&&t.dataset.b)cOpen[t.dataset.b]=t.open?1:0},true);
 function renderKat(){var q=($('#k-q').value||'').toLowerCase();
  $('#k-grid').innerHTML=KAT.map(function(x){return prod(x.id)}).filter(function(p){return !q||(p.n+' '+p.c).toLowerCase().indexOf(q)>=0}).map(function(p){
-  return '<div class="prod"><div class="ph" style="background-image:url(\''+esc(img(p.ph[0]))+'\')"><span class="tag">'+esc(p.c)+'</span>'+(p._ed?'<span class="ed">ИЗМЕНЁН</span>':'')+'</div><div class="bd"><h3>'+esc(p.n)+'</h3><div class="pr">'+(p.st?'от '+money(p.st.S)+' BYN/шт.':money(p.price)+' BYN')+'</div><p>'+esc(p.d)+'</p>'+netBadge(p)+'<div class="act"><button class="btn ghost sm" data-ed="'+p.id+'">Редактировать</button></div></div></div>'}).join('')}
+  return '<div class="prod"><div class="ph" style="background-image:url(\''+esc(img(p.ph[0]))+'\')"><span class="tag">'+esc(p.c)+'</span>'+(p.live?'<span class="live">витрина</span>':'')+(p._ed?'<span class="ed">ИЗМЕНЁН</span>':'')+'</div><div class="bd"><h3>'+esc(p.n)+'</h3><div class="pr">'+(p.st!=null?'от '+money(typeof p.st=='number'?p.st:p.st.S)+' BYN/'+(p.u||'шт.'):money(p.price)+' BYN')+'</div><p>'+esc(p.d)+'</p>'+netBadge(p)+'<div class="act"><button class="btn ghost sm" data-ed="'+p.id+'">Редактировать</button></div></div></div>'}).join('')}
 var cur=null,curPh=null,curI=0;
 function openEd(id){var p=prod(id);cur=id;curPh=p.ph.slice();curI=0;var m=$('#k-modal');m.hidden=false;
  $('#k-form').innerHTML='<form class="f"><h2>'+esc(p.n)+'</h2><div><div class="main" id="f-main"></div><div class="thumbs" id="f-th"></div>'+
