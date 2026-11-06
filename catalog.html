@@ -576,7 +576,7 @@ if(red||!('IntersectionObserver' in window)){els.forEach(function(e){e.classList
 document.documentElement.classList.add('rvjs');
 var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.12,rootMargin:'0px 0px -6% 0px'});
 els.forEach(function(e){io.observe(e)})})();
-</script><script src="js/kat.js?v=8"></script>
+</script><script src="js/kat.js?v=9"></script>
 <script>
 let fc='all',fp='all';const C=[...document.querySelectorAll('[data-card]')];
 function ap(){C.forEach(c=>c.style.display=(fc=='all'||c.dataset.c==fc)&&(fp=='all'||c.dataset.g==fp)?'':'none')}

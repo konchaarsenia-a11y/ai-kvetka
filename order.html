@@ -588,7 +588,7 @@ if(red||!('IntersectionObserver' in window)){els.forEach(function(e){e.classList
 document.documentElement.classList.add('rvjs');
 var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.12,rootMargin:'0px 0px -6% 0px'});
 els.forEach(function(e){io.observe(e)})})();
-</script><script src="js/kat.js?v=8"></script><script src="cart.js?v=11"></script><script>
+</script><script src="js/kat.js?v=9"></script><script src="cart.js?v=11"></script><script>
 function en(y){var x={},k;for(k in y)x[k]=y[k];var p=window.AIK_FIND?AIK_FIND(x):null;if(!x.c&&p)x.c=p.c;if(!x.m)x.m=(p&&AIK_COMP(p,x.s))||x.d||'';return x}
 function gl(x){if(x.c!=='Цветы')return '';/* гарантия 2 суток, кроме гортензий и кустовых */var t=/гортенз|кустов/i.test((x.n||'')+' '+(x.m||''))?'Соберём в день доставки':'Соберём в день доставки, гарантия свежести 2 суток';return '<p class="cgl">'+t+'</p>'}
 var it=document.getElementById('items'),f=document.getElementById('f');

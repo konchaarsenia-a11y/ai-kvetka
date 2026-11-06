@@ -56,6 +56,7 @@ main{position:relative;z-index:1;max-width:1176px;margin:0 auto;padding:28px 24p
 .prod .ph{aspect-ratio:4/3;background:var(--line2) center/cover;position:relative}
 .prod .ph .tag{position:absolute;left:10px;top:10px;background:rgba(247,243,236,.92);border-radius:999px;padding:3px 10px;font-size:12px;color:var(--mut)}
 .prod .ph .ed{position:absolute;right:10px;top:10px;background:var(--ol);color:#fff;border-radius:999px;padding:3px 10px;font-size:11px;letter-spacing:.08em}
+.prod .ph .live{position:absolute;left:10px;bottom:10px;background:var(--ol);color:#fff;border-radius:999px;padding:3px 10px;font-size:11px;letter-spacing:.08em}
 .prod .bd{padding:14px 16px 16px;display:flex;flex-direction:column;gap:6px;flex:1}
 .prod h3{margin:0;font-size:21px}.prod .pr{font-family:'Gilda Display',serif;font-size:18px;color:var(--ol)}
 .prod p{margin:0;color:var(--mut);font-size:13px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
