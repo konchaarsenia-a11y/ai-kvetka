@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" role="img" aria-label="$>B> A:>@>">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" role="img" aria-label="">
   <rect width="800" height="1000" fill="#e9ecef"/>
   <g fill="none" stroke="#8a929b" stroke-width="3" stroke-linecap="round">
     <path d="M400 760 V430"/>
@@ -9,5 +9,5 @@
     <circle cx="440" cy="330" r="28"/>
     <circle cx="400" cy="300" r="26"/>
   </g>
-  <text x="400" y="860" text-anchor="middle" fill="#4a525a" font-family="Georgia, serif" font-size="42">$>B> A:>@></text>
+  <text x="400" y="860" text-anchor="middle" fill="#4a525a" font-family="Georgia, serif" font-size="42"></text>
 </svg>
