@@ -32,7 +32,7 @@ function open(c){var p=AIK_FIND({id:c.dataset.id,n:c.querySelector('h3').textCon
  m.querySelector('.pv-cat').textContent=p.c;m.querySelector('.pv-h').textContent=p.n;
  var desc=m.querySelector('.pv-d'),dt=(p.d||'').trim();desc.textContent=dt;desc.hidden=!dt;
  var care=window.AIK_CARE&&p.care&&AIK_CARE[p.care],cb=m.querySelector('.pv-care');
- if(cb){cb.hidden=!care;cb.innerHTML=care?'<b>'+care.t+'</b>'+care.lines.map(function(s){return '<p>'+s+'</p>'}).join('')+'<a href="returns.html#'+care.href+'">Памятка по уходу</a>':''}
+ if(cb){cb.hidden=!care;cb.innerHTML=care?'<a href="returns.html#'+care.href+'">Памятка по уходу</a>':''}
  mono=!!(p.st&&p.qs);q=mono?(+c.dataset.n||p.q0||p.qs[0]):1;qw.classList.toggle('pvst',mono);qw.setAttribute('aria-label',mono?'Количество цветов':'Количество');
  qsw.classList.toggle('on',mono);qsw.innerHTML='';qsl=null;pr._v=null;if(mono){qsl=AIK_QSL({marks:p.qs,value:q,max:SX,step:1,unit:p.u||'шт.',label:'Количество',onChange:function(v){q=v;showPr();rv()}});qsw.appendChild(qsl.el)}
  wpw.innerHTML='';wui=null;if(window.AIK_WRAPOK&&AIK_WRAPOK(p)){wui=AIK_WRAPUI({big:1,value:c._aikW?c._aikW.get():'none',onChange:showPr});wpw.appendChild(wui.el);if(c._aikW&&c._aikW.isOpen())wui.open()}
