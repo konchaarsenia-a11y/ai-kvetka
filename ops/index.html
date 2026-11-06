@@ -1,39 +1,51 @@
 <!doctype html>
 <html lang="ru"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#efe9df"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="robots" content="noindex,nofollow">
 <title>Операционка · AI KVETKA</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600&family=Gilda+Display&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="ops.css?v=6">
+<link rel="stylesheet" href="ops.css?v=9">
 </head><body>
-<!-- Черновик операционки AI KVETKA. Данные заказов ДЕМО, всё хранится в localStorage браузера. Каталог берётся из ../js/kat.js. -->
+<!-- Операционка AI KVETKA: заказы/каталог/статистика/главная. Демо в localStorage. Каталог — ../js/kat.js (без S/M/L). -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
  <symbol id="sprig" viewBox="0 0 60 220"><path class="s" d="M30 216 C29 170 27 120 31 70 C33 45 32 25 29 6"/>
   <path class="l" d="M30 190 Q44 186 47 172 Q33 175 30 190Z"/><path class="l" d="M29.6 165 Q15 162 12 148 Q27 150 29.6 165Z"/>
   <path class="l" d="M29.4 138 Q44 133 46 118 Q32 122 29.4 138Z"/><path class="l" d="M30 110 Q16 106 14 92 Q28 95 30 110Z"/>
   <path class="l" d="M31 84 Q44 79 45 66 Q33 70 31 84Z"/><path class="l" d="M31.5 58 Q19 55 18 43 Q30 46 31.5 58Z"/>
   <path class="l" d="M31 34 Q41 29 41 18 Q32 22 31 34Z"/><circle class="b" cx="29" cy="6" r="3.2"/></symbol>
+ <symbol id="i-orders" viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4M9 11h7M9 15h7M9 19h4"/></symbol>
+ <symbol id="i-cat" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3"/><path d="M12 5c0-2 3-3 3-1M12 11v10M12 16c-3 0-5-2-5-4 3 0 5 2 5 4zM12 18c3 0 5-2 5-4-3 0-5 2-5 4z"/></symbol>
+ <symbol id="i-home" viewBox="0 0 24 24"><path d="M4 11 12 4l8 7M6 10v10h12V10M10 20v-5h4v5"/></symbol>
+ <symbol id="i-stats" viewBox="0 0 24 24"><path d="M4 20h16M7 20v-6M12 20V8M17 20v-9"/></symbol>
 </defs></svg>
 <svg class="tw L"><use href="#sprig"/></svg><svg class="tw R"><use href="#sprig"/></svg>
 
 <header class="top">
- <a class="logo" href="#orders">AI KVETKA <small>операционка</small></a>
- <nav class="tabs"><a href="#orders" data-t="orders">Заказы</a><a href="#catalog" data-t="catalog">Каталог</a><a href="#stats" data-t="stats">Статистика</a></nav>
- <span class="demo">демо-данные</span>
+ <a class="logo" href="#orders">AI KVETKA <small>операционка</small></a><svg class="tws" aria-hidden="true"><use href="#sprig"/></svg>
+ <nav class="tabs"><a href="#orders" data-t="orders"><svg class="ic"><use href="#i-orders"/></svg><span>Заказы</span></a><a href="#catalog" data-t="catalog"><svg class="ic"><use href="#i-cat"/></svg><span>Каталог</span></a><a href="#home" data-t="home"><svg class="ic"><use href="#i-home"/></svg><span>Главная</span></a><a href="#stats" data-t="stats"><svg class="ic"><use href="#i-stats"/></svg><span>Статистика</span></a></nav>
+ <!-- переключатель роли: демо до входа через Telegram -->
+ <div class="role" id="role-sw" title="Демо-роли. Позже — вход через Telegram без пароля.">
+  <button type="button" data-role="owner" class="on">Владелец</button>
+  <button type="button" data-role="florist">Флорист</button>
+ </div>
+ <span class="demo">демо</span>
 </header>
 
 <main>
  <section id="v-orders" class="view">
   <div class="head"><h1>Заказы</h1><p class="sub" id="o-sum"></p></div>
   <div class="filters" id="o-filters"></div>
+  <!-- фильтр по дате получения: сегодня / завтра / предзаказы -->
+  <div class="filters dates" id="o-dates"></div>
   <div class="tools"><input id="o-q" type="search" placeholder="Поиск: номер, имя, телефон"><select id="o-sort"><option value="when">По времени получения</option><option value="new">Сначала новые</option></select></div>
   <div class="split"><div class="list" id="o-list"></div><aside class="card" id="o-card"><div class="empty">Выберите заказ слева</div></aside></div>
  </section>
 
  <section id="v-catalog" class="view" hidden>
-  <div class="head"><h1>Каталог</h1><p class="sub">Все товары из <code>js/kat.js</code>. Пометка «витрина» — то, что видно на сайте; остальные остаются здесь. Правки сохраняются в этом браузере, затем «Скачать kat.js» и замена файла в репозитории.</p></div>
+  <div class="head"><h1>Каталог</h1><p class="sub">Полный прайс из <code>js/kat.js</code> (~82 позиции, без S/M/L). Правки — в этом браузере, затем «Скачать kat.js». Упаковка букета — 10 BYN.</p></div>
   <div class="tools"><input id="k-q" type="search" placeholder="Поиск товара"><span class="grow"></span>
+   <div class="seg" id="k-live"><button type="button" data-live="all" class="on">Все</button><button type="button" data-live="live">На сайте</button></div>
    <button class="btn ghost" id="k-reset">Сбросить правки</button><button class="btn" id="k-export">Скачать kat.js</button></div>
   <div class="grid" id="k-grid"></div>
  </section>
@@ -43,14 +55,20 @@
   <nav class="subtabs"><a href="#stats" data-s="m">Метрики</a><a href="#stats/cost" data-s="c">Себестоимость</a></nav>
   <div id="s-m"><p class="sub">По заказам из этого браузера (дата оформления). Отменённые не входят в выручку и средний чек.</p>
    <div class="filters" id="s-per"></div><div id="s-body"></div></div>
-  <div id="s-c" hidden><p class="sub">Внутренние данные: хранятся только в этом браузере, в публичный kat.js не попадают. Перенос на другое устройство — через ops-cost.json. Любая смена цены цветка, упаковки или ЗП сразу пересчитывает все букеты.</p>
+  <div id="s-c" hidden><p class="sub">Внутренние данные (не в публичный kat.js). Упаковка букета — 10 BYN. Перенос — через ops-cost.json.</p>
    <div id="s-costv"></div></div>
  </section>
-</main>
 
+ <section id="v-home" class="view" hidden>
+  <div class="head"><h1>Главная</h1><p class="sub">Цветок недели и категории на главной сайта. Правки в браузере → «Скачать home.js».</p></div>
+  <div class="tools"><span class="grow"></span><button class="btn ghost" id="h-reset">Сбросить</button><button class="btn ghost" id="h-html">HTML-вставка</button><button class="btn" id="h-export">Скачать home.js</button></div>
+  <div id="h-body"></div>
+ </section>
+</main>
+<div class="modal" id="h-modal" hidden><div class="sheet" role="dialog" aria-modal="true"><button class="x" data-close aria-label="Закрыть">×</button><div id="h-form"></div></div></div>
 <div class="modal" id="k-modal" hidden><div class="sheet" role="dialog" aria-modal="true"><button class="x" data-close aria-label="Закрыть">×</button><div id="k-form"></div></div></div>
 <div class="toast" id="toast"></div>
 
 <script src="../js/kat.js?v=9"></script>
-<script src="ops.js?v=6"></script>
+<script src="ops.js?v=9"></script><script src="home.js?v=3"></script>
 </body></html>
