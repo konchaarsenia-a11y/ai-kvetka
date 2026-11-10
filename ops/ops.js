@@ -307,9 +307,9 @@ function renderStats(){var A=agg(per),P=agg(per,per),pl=per==1?'вчера':'п�
  h+='<div class="kpis net1">'+(cov.length?kp('Чистая прибыль',m0(netS)+' <small>BYN</small>','<span class="dl '+(netS>=0?'pos':'neg')+'">маржа '+pct(revC?netS/revC:0)+'</span> · по '+cov.length+' зак.',0):kp('Чистая прибыль','—','Задайте <a class="lnk" href="#stats/cost">Себестоимость</a>',0))+'</div>';
  var D=per==1?7:per,days=[],mx=1;for(var i=D-1;i>=0;i--){var a=t0()-i*864e5,v=orders.filter(function(o){return o.st!='cancel'&&o.at>=a&&o.at<a+864e5}).reduce(function(s,o){return s+total(o)},0);days.push({a:a,v:v});mx=Math.max(mx,v)}
  var W=720,H=200,bw=W/D,svg='<svg viewBox="0 0 '+W+' '+(H+24)+'" class="chart">'+[.25,.5,.75,1].map(function(f){return '<line x1="0" x2="'+W+'" y1="'+(H-H*f*.9)+'" y2="'+(H-H*f*.9)+'"/>'}).join('')+
-  days.map(function(d,i){var bh=d.v/mx*H*.9,x=i*bw+bw*.18,w=bw*.64,td=i==D-1,dt=new Date(d.a);return '<rect class="'+(td?'td':'')+'" x="'+x+'" y="'+(H-bh)+'" width="'+w+'" height="'+Math.max(bh,1)+'" rx="'+Math.min(6,w/3)+'"><title>'+dt.toLocaleDateString('ru-RU')+': '+money(d.v)+' BYN</title></rect>'+
+  days.map(function(d,i){var bh=d.v/mx*H*.9,x=i*bw+bw*.18,w=bw*.64,td=i==D-1,dt=new Date(d.a);return '<rect data-day="'+d.a+'" class="'+(td?'td':'')+(sd==d.a?' sel':'')+'" x="'+x+'" y="'+(H-bh)+'" width="'+w+'" height="'+Math.max(bh,1)+'" rx="'+Math.min(6,w/3)+'"><title>'+dt.toLocaleDateString('ru-RU')+': '+money(d.v)+' BYN</title></rect>'+
    ((D<=7||i%5==0||td)?'<text x="'+(x+w/2)+'" y="'+(H+17)+'">'+(D<=7?dt.toLocaleDateString('ru-RU',{weekday:'short'}):dt.getDate())+'</text>':'')}).join('')+'</svg>';
- h+='<div class="sgrid"><div class="panel wide"><h3>Выручка по дням</h3>'+svg+'</div>';
+ h+='<div class="sgrid"><div class="panel wide"><h3>Выручка по дням <small>нажмите на день</small></h3>'+svg+dayBox(sd)+'</div>';/* клик по дню → его заказы */
  var sc={};A.L.forEach(function(o){sc[o.st]=(sc[o.st]||0)+1});
  h+='<div class="panel"><h3>По статусам</h3>'+ST.map(function(s){var c=sc[s[0]]||0;return '<div class="bar"><span>'+stb(s[0])+'</span><i><b style="width:'+(A.n?c/A.n*100:0)+'%;background:var(--s-'+s[0]+')"></b></i><em>'+c+'</em></div>'}).join('')+'</div>';
  var dl=A.ok.filter(function(o){return o.mode=='dlv'}).length,sf=A.ok.length-dl,pd=A.ok.length?Math.round(dl/A.ok.length*100):0;
@@ -318,6 +318,12 @@ function renderStats(){var A=agg(per),P=agg(per,per),pl=per==1?'вчера':'п�
  var T=Object.keys(tp).map(function(k){return tp[k]}).sort(function(a,b){return b.v-a.v}).slice(0,5),tm=T.length?T[0].v:1;
  h+='<div class="panel wide"><h3>Топ товаров</h3>'+(T.length?T.map(function(t,i){return '<div class="tp"><span class="nn">'+(i+1)+'</span><img src="'+esc(img((t.p.ph||[])[0]||''))+'" alt=""><div><div>'+esc(t.p.n)+' <small>· '+t.n+' шт.</small></div><i><b style="width:'+(t.v/tm*100)+'%"></b></i></div><em>'+money(Math.round(t.v))+' BYN</em></div>'}).join(''):'<div class="k">Нет продаж</div>')+'</div></div>';
  $('#s-body').innerHTML=h}
+/* день из диаграммы: список заказов, созданных в этот день */
+var sd=null;
+function dayBox(a){if(a==null)return '';var L=orders.filter(function(o){return o.at>=a&&o.at<a+864e5}).sort(function(x,y){return x.at-y.at}),ok=L.filter(function(o){return o.st!='cancel'}),rv=ok.reduce(function(s,o){return s+total(o)},0);
+ return '<div class="dayb"><div class="dh"><b>'+new Date(a).toLocaleDateString('ru-RU',{weekday:'long',day:'numeric',month:'long'})+'</b><span>'+L.length+' зак. · '+money(Math.round(rv))+' BYN</span><button class="x" data-dx>✕</button></div>'+
+  (L.length?L.map(function(o){return '<a class="dr'+(o.st=='cancel'?' cx':'')+'" href="#order/'+o.id+'"><span>'+new Date(o.at).toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})+'</span><span>№'+esc(o.id)+' · '+esc(o.name)+'</span>'+stb(o.st)+'<em>'+money(Math.round(total(o)))+' BYN</em></a>'}).join(''):'<div class="k">Заказов не было</div>')+'</div>'}
+$('#s-body').addEventListener('click',function(e){var r=e.target.closest('[data-day]');if(r){sd=sd==+r.dataset.day?null:+r.dataset.day;renderStats();return}if(e.target.closest('[data-dx]')){sd=null;renderStats()}});
 $('#s-per').onclick=function(e){var b=e.target.closest('[data-per]');if(!b)return;per=+b.dataset.per;LS.set('aik_ops_per',per);renderStats()};
 function statsSub(h){var c=h=='stats/cost';$('#s-m').hidden=c;$('#s-c').hidden=!c;document.querySelectorAll('.subtabs a').forEach(function(a){a.classList.toggle('on',(a.dataset.s=='c')==c)});c?renderCostView():renderStats()}
 

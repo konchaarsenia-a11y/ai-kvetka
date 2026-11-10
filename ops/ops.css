@@ -346,3 +346,9 @@ body[data-role="florist"] .tabs a[data-t="stats"]{display:none}
  .top{flex-wrap:wrap}
  .demo{display:none}
 }
+
+/* клик по дню в «Выручка по дням» */
+.chart rect{cursor:pointer}.chart rect.sel{fill:var(--ol);opacity:1;stroke:var(--ink,#222);stroke-width:1.5}
+.dayb{margin-top:14px;border-top:1px solid var(--line2);padding-top:12px}.dayb .dh{display:flex;align-items:center;gap:10px;margin-bottom:8px}.dayb .dh b{font-weight:500}.dayb .dh b::first-letter{text-transform:uppercase}.dayb .dh span{color:var(--mut);font-size:13px}.dayb .x{margin-left:auto;border:0;background:none;cursor:pointer;color:var(--mut);font-size:15px}
+.dayb .dr{display:grid;grid-template-columns:46px 1fr auto auto;gap:10px;align-items:center;padding:8px 4px;border-bottom:1px solid var(--line2);color:inherit;text-decoration:none;font-size:14px}.dayb .dr:hover{background:rgba(0,0,0,.03)}.dayb .dr.cx{opacity:.5}.dayb .dr span:first-child{color:var(--mut)}.dayb .dr em{font-style:normal;white-space:nowrap}
+@media(max-width:600px){.dayb .dr{grid-template-columns:40px 1fr auto}.dayb .dr .st{display:none}}
