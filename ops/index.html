@@ -1,11 +1,11 @@
 <!doctype html>
 <html lang="ru"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#efe9df"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#f8f4ec"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="robots" content="noindex,nofollow">
 <title>Операционка · AI KVETKA</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600&family=Gilda+Display&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="ops.css?v=9">
+<link rel="stylesheet" href="ops.css?v=10">
 </head><body>
 <!-- Операционка AI KVETKA: заказы/каталог/статистика/главная. Демо в localStorage. Каталог — ../js/kat.js (без S/M/L). -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
@@ -22,7 +22,8 @@
 <svg class="tw L"><use href="#sprig"/></svg><svg class="tw R"><use href="#sprig"/></svg>
 
 <header class="top">
- <a class="logo" href="#orders">AI KVETKA <small>операционка</small></a><svg class="tws" aria-hidden="true"><use href="#sprig"/></svg>
+ <!-- знак без названия: вырезан из img/logo/logo-white.png (ветка design/bw-logo), залит чёрным -->
+ <a class="logo" href="#orders"><img src="logo-mark.png" width="267" height="352" alt="AI KVETKA"><small>операционка</small></a><svg class="tws" aria-hidden="true"><use href="#sprig"/></svg>
  <nav class="tabs"><a href="#orders" data-t="orders"><svg class="ic"><use href="#i-orders"/></svg><span>Заказы</span></a><a href="#catalog" data-t="catalog"><svg class="ic"><use href="#i-cat"/></svg><span>Каталог</span></a><a href="#home" data-t="home"><svg class="ic"><use href="#i-home"/></svg><span>Главная</span></a><a href="#stats" data-t="stats"><svg class="ic"><use href="#i-stats"/></svg><span>Статистика</span></a></nav>
  <!-- переключатель роли: демо до входа через Telegram -->
  <div class="role" id="role-sw" title="Демо-роли. Позже — вход через Telegram без пароля.">
@@ -69,6 +70,6 @@
 <div class="modal" id="k-modal" hidden><div class="sheet" role="dialog" aria-modal="true"><button class="x" data-close aria-label="Закрыть">×</button><div id="k-form"></div></div></div>
 <div class="toast" id="toast"></div>
 
-<script src="../js/kat.js?v=9"></script>
-<script src="ops.js?v=9"></script><script src="home.js?v=3"></script>
+<script src="../js/kat.js?v=10"></script>
+<script src="ops.js?v=10"></script><script src="home.js?v=3"></script>
 </body></html>
