@@ -1,0 +1,70 @@
+/* Чёрно-белые концепты главной. Только графит, белый и серый. */
+*{box-sizing:border-box}
+html,body{margin:0;background:#fff;color:#111;font:16px/1.5 Outfit,Arial,sans-serif}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+h1,h2,h3{font-family:"Bodoni Moda",serif;font-weight:400;letter-spacing:0;margin:0}
+.nav{display:flex;gap:22px;align-items:center;justify-content:flex-end;padding:18px 32px;font-size:11px;letter-spacing:.22em;text-transform:uppercase;font-weight:300}
+.nav a:first-child{margin-right:auto;letter-spacing:.28em}
+.k{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 22px;border:1px solid currentColor;letter-spacing:.22em;text-transform:uppercase;font-size:11px}
+.k.fill{background:#fff;color:#111;border-color:#fff}
+.sec{padding:72px 6vw}
+.lbl{display:block;font-size:11px;letter-spacing:.32em;text-transform:uppercase;font-weight:300;margin-bottom:12px}
+.lead{max-width:460px;font-weight:300}
+.row{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+.cats{display:grid;grid-template-columns:1.2fr 1fr .8fr;gap:18px}
+.cats a{display:block}
+.cats img{width:100%;height:280px;object-fit:cover;filter:grayscale(1);contrast(1.05)}
+.cats b{display:block;margin-top:10px;font-family:"Bodoni Moda",serif;font-size:28px;font-weight:400}
+.cats small{letter-spacing:.16em;text-transform:uppercase;font-size:11px}
+.cats .all{background:#111;color:#fff;min-height:280px;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-end;padding:24px}
+.week{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;border-top:1px solid #111;border-bottom:1px solid #111}
+.week .lat{font-family:"Bodoni Moda",serif;font-style:italic}
+.rev{display:grid;grid-template-columns:180px 1fr;gap:40px}
+.rev .big{font-family:"Bodoni Moda",serif;font-size:84px;line-height:.9}
+.rev q{font-family:"Bodoni Moda",serif;font-size:28px;line-height:1.35}
+.about{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+.about img{width:100%;height:420px;object-fit:cover;filter:grayscale(1)}
+.foot{background:#111;color:#f2f2f2;padding:48px 6vw 32px}
+.foot .lg{width:220px;height:auto}
+.foot a{color:#f2f2f2}
+.foot .cols{display:grid;grid-template-columns:1.2fr 1fr 1.2fr;gap:24px;margin-top:28px;font-size:14px}
+.foot p{margin:0 0 6px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:#111}
+.grid a{background:#fff;color:#111;padding:0 0 14px}
+.grid img{width:100%;height:220px;object-fit:cover;filter:grayscale(1)}
+.grid b,.grid span{display:block;padding:0 12px}
+.grid b{margin-top:10px;font-weight:400}
+.grid span{font-size:12px;letter-spacing:.14em}
+@media(max-width:800px){
+.cats,.week,.rev,.about,.grid,.foot .cols{grid-template-columns:1fr}
+.nav{gap:12px;font-size:10px}
+}
+
+.h1{min-height:100vh;background:#000;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:96px 24px 48px}
+.h1 .logo{width:min(820px,86vw);height:auto}
+.h1 .sub{font-family:"Bodoni Moda",serif;font-size:28px;margin:18px 0 8px}
+.h1 .lead{color:#d8d8d8}
+.strip{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;background:#000;padding:0 8px 8px}
+.strip img{height:280px;width:100%;object-fit:cover;filter:grayscale(1)}
+.h2{display:grid;grid-template-columns:1fr 1fr;min-height:100vh;background:#000;color:#fff}
+.h2 .pane{display:flex;flex-direction:column;justify-content:center;padding:88px 48px}
+.h2 .logo{width:min(560px,100%);height:auto}
+.h2 .sub{font-family:"Bodoni Moda",serif;font-size:36px;margin:22px 0 10px}
+.h2 .lead{color:#d0d0d0}
+.h2 .photo{background:#111 url("../../img/opt/f2-800.webp") center/cover;filter:grayscale(1) contrast(1.05);min-height:100vh}
+.h3{min-height:100vh;color:#fff;display:flex;flex-direction:column;justify-content:flex-end;padding:8vh 6vw 48px;background:linear-gradient(to top,rgba(0,0,0,.72),rgba(0,0,0,.28)),url("../../img/opt/f2-800.webp") center/cover}
+.h3 .logo{width:min(980px,92vw);height:auto;margin-bottom:18px}
+.h3 .rule{width:100%;height:1px;background:#fff;margin:14px 0}
+.h3 .sub{letter-spacing:.32em;text-transform:uppercase;font-size:12px}
+.h3 .lead{max-width:640px}
+.h4{background:#fff;color:#111;padding:18px 3vw 28px;border-bottom:1px solid #111}
+.h4 .logo{width:100%;height:auto;filter:invert(1)}
+.h4 .sub{font-family:"Bodoni Moda",serif;font-size:42px;margin:8px 0}
+body.bw1 .nav,body.bw3 .nav{position:absolute;inset:0 0 auto 0;z-index:2;color:#fff;background:transparent}
+/* меню bw2 только на чёрной половине, чтобы не теряться на фото */
+body.bw2 .nav{position:absolute;left:0;top:0;width:50%;z-index:2;color:#fff;background:#000;justify-content:flex-start;flex-wrap:wrap;gap:14px 18px}
+.h2 .k{color:#fff}
+.h2 .k.fill{color:#111;background:#fff}
+body.bw4 .nav{color:#111;border-bottom:1px solid #111}
+@media(max-width:800px){.h2{grid-template-columns:1fr}.h2 .photo{min-height:52vh}.strip{grid-template-columns:1fr 1fr}.h4 .sub{font-size:28px}}
