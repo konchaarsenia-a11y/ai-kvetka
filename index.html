@@ -541,7 +541,7 @@ html .ctc .ctm{margin-top:auto;padding-top:12px;font:normal 10.5px Arial,sans-se
   <p class="ld">Собираем букеты из сезонных цветов и интересных сортов. Доставка ежедневно с 9:00 до 21:00: Минск-Мир бесплатно от 50 BYN, по городу 15 BYN.</p>
   <div class="cta"><a class="kbt f" href="catalog.html">Смотреть каталог</a><a class="kbt o" href="https://ig.me/m/ai_kvetka" target="_blank" rel="noopener">Заказать в Direct</a></div>
  </div>
- <div class="hm-a" data-rv style="--i:2"><div class="ar"><img src="img/opt/f2-800.webp" srcset="img/opt/f2-400.webp 400w, img/opt/f2-800.webp 800w" sizes="(max-width:900px) 100vw, 404px" width="800" height="1200" alt="Букет из пионов, роз и эвкалипта" fetchpriority="high" decoding="async"></div></div><script id="hmh">(function(){var d=document.documentElement,w=-1,t,m=window.matchMedia&&matchMedia("(max-width:800px)");function set(){if(!m||!m.matches){d.style.removeProperty("--hmh");return}var hd=document.querySelector("header"),h=Math.round(d.clientHeight-(hd?hd.offsetHeight:73));d.style.setProperty("--hmh",Math.min(860,Math.max(540,h))+"px")}function f(){var W=d.clientWidth;if(W===w)return;w=W;set();clearTimeout(t);t=setTimeout(set,400)}f();addEventListener("resize",f);addEventListener("orientationchange",function(){w=-1;setTimeout(f,350)})})()</script>
+ <div class="hm-a" data-rv style="--i:2"><div class="ar"><img src="img/opt/f2-800.webp" srcset="img/opt/f2-400.webp 400w, img/opt/f2-800.webp 800w" sizes="(max-width:900px) 100vw, 404px" width="800" height="1200" alt="Букет из пионов, роз и эвкалипта" fetchpriority="high" decoding="async"><span class="hmd" aria-hidden="true"></span><!-- крупный белый логотип по центру фото --><img class="hml" src="img/logo/logo-white.png" width="1576" height="796" alt="AI KVETKA"></div></div><script id="hmh">(function(){var d=document.documentElement,w=-1,t,m=window.matchMedia&&matchMedia("(max-width:800px)");function set(){if(!m||!m.matches){d.style.removeProperty("--hmh");return}var hd=document.querySelector("header"),h=Math.round(d.clientHeight-(hd?hd.offsetHeight:73));d.style.setProperty("--hmh",Math.min(860,Math.max(540,h))+"px")}function f(){var W=d.clientWidth;if(W===w)return;w=W;set();clearTimeout(t);t=setTimeout(set,400)}f();addEventListener("resize",f);addEventListener("orientationchange",function(){w=-1;setTimeout(f,350)})})()</script>
  <div class="ftg hf" data-rvg><a class="fi" href="preorder.html"><svg class="ic" viewBox="0 0 36 36" aria-hidden="true"><rect x="5" y="8" width="26" height="22" rx="1"/><path d="M5 14h26M11 5v6M25 5v6"/><path d="M18 18.5c-1.6-2.4-5-1-3.6 1.6.7 1.2 2.2 2.4 3.6 3.4 1.4-1 2.9-2.2 3.6-3.4 1.4-2.6-2-4-3.6-1.6z"/></svg><span class="ftx"><b>Предзаказ к праздникам</b><small>Соберём свежий букет к нужной дате</small></span><em>Оформить →</em></a><a class="fi" href="delivery.html"><svg class="ic" viewBox="0 0 36 36" aria-hidden="true"><path d="M3 24V11h17v13M20 15h7l5 5v4h-3"/><circle cx="9" cy="25.5" r="2.6"/><circle cx="26" cy="25.5" r="2.6"/><path d="M12 24h11"/></svg><span class="ftx"><b>Бесплатная доставка</b><small>Минск-Мир от 50 BYN, город 15 BYN</small></span><em>Условия →</em></a><a class="fi" href="delivery.html"><svg class="ic" viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="13"/><path d="M18 10v8l5 3"/></svg><span class="ftx"><b>Интервал 1 час</b><small>Ежедневно с 9:00 до 21:00, есть самовывоз</small></span><em>Подробнее →</em></a><a class="fi" href="returns.html#guarantee"><svg class="ic" viewBox="0 0 36 36" aria-hidden="true"><path d="M9 28C9 15 17 8 30 7c0 13-7 21-19 21z"/><path d="M9 28c5-6 10-11 16-15"/><path d="M6 31l3-3"/></svg><span class="ftx"><b>Гарантия свежести</b><small>2 суток при соблюдении рекомендаций по уходу</small></span><em>Подробнее →</em></a></div>
 </div>
 </section>
@@ -703,6 +703,9 @@ header nav a:hover{border-color:#fff!important}
 #top.hm{background:#111;color:#fff}
 #top.hm h1,#top.hm h1 em,#top.hm .lbl,#top.hm p.ld{color:#fff}
 #top.hm .hm-a .ar{border-radius:220px 220px 36px 36px}
+/* лёгкое затемнение и логотип ~480px по центру фото */
+#top .hmd{position:absolute;inset:0;background:rgba(0,0,0,.32);z-index:1;pointer-events:none}
+#top .hml{position:absolute;z-index:2;left:50%;top:50%;width:480px;max-width:92%;height:auto;transform:translate(-50%,-50%)}
 #top.hm .cta .kbt.f{background:#fff;border-color:#fff;color:#111}
 #top.hm .cta .kbt.o{background:transparent;border-color:#fff;color:#fff}
 #top.hm .hf .fi{background:transparent;border:1px solid rgba(255,255,255,.4);color:#fff}
@@ -724,6 +727,7 @@ header nav a:hover{border-color:#fff!important}
 #cats,#reviews,#onas{padding-top:88px;padding-bottom:88px}
 @media(max-width:800px){
 .lgw{height:40px}
+html #top.hm .hm-a .ar img.hml{width:70%!important;max-width:none!important;left:50%!important;top:36%!important;height:auto!important;transform:translate(-50%,-50%)!important;opacity:1!important}
 #top.hm .hf .fi{background:#fff;color:#111;border-color:#e6e6e6}
 #top.hm .hf .fi b,#top.hm .hf .fi small,#top.hm .hf .fi em{color:#111}
 }
