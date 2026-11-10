@@ -1,6 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" role="img" aria-label="">
-  <rect width="800" height="1000" fill="#e9ecef"/>
-  <g fill="none" stroke="#8a929b" stroke-width="3" stroke-linecap="round">
+  <!-- графит #5c6979 вместо серого #4a525a -->
+  <rect width="800" height="1000" fill="#e6e9ed"/>
+  <g fill="none" stroke="#969faa" stroke-width="3" stroke-linecap="round">
     <path d="M400 760 V430"/>
     <path d="M400 620 C330 580 300 520 340 470"/>
     <path d="M400 600 C470 560 500 500 460 450"/>
@@ -9,5 +10,5 @@
     <circle cx="440" cy="330" r="28"/>
     <circle cx="400" cy="300" r="26"/>
   </g>
-  <text x="400" y="860" text-anchor="middle" fill="#4a525a" font-family="Georgia, serif" font-size="42"></text>
+  <text x="400" y="860" text-anchor="middle" fill="#5c6979" font-family="Georgia, serif" font-size="42"></text>
 </svg>
