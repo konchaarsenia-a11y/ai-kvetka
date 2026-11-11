@@ -1,6 +1,6 @@
 /* AI KVETKA · операционка. Без сборки. Данные в localStorage.
    Каталог: window.AIK_KAT из ../js/kat.js (82 позиции, без S/M/L).
-   aik_ops_orders_v4 — заказы; aik_ops_kat — правки поверх каталога; aik_ops_cost3 — себестоимость; aik_ops_role — роль. */
+   aik_ops_orders_v4 — заказы; aik_ops_kat — правки поверх каталога; aik_ops_cost3 — себестоимость; aik_ops_role — роль; aik_ops_stock_v1 — склад (модуль stock.js). */
 (function(){
 var $=function(s,r){return (r||document).querySelector(s)},esc=function(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})};
 var KAT=window.AIK_KAT||[],BASE=window.AIK_KAT_BASE||'../',money=window.AIK_MONEY||function(x){return String(Math.round(+x*100)/100).replace('.',',')};
@@ -84,8 +84,8 @@ function calcUnit(p,unit){ // чистыми с 1 ед.: закуп + налог
  var C=costDB(),P=C.it[p.id]||{},buy=buyOf(p.id),wk=0,pack=0,ot=num(P.ot||0),
   c=buy+ot,fee=unit*(num(C.set.tax)+num(C.set.acq))/100,net=unit-fee-c;
  return{rev:unit,cost:c,fee:fee,net:net,mg:unit?net/unit:0,mk:c?(unit-c)/c:0,buy:buy,wk:wk,pack:pack,ot:ot,ovh:0}}
-function netBadge(p){var x=calcUnit(p,p.price);if(!buyOf(p.id)&&!(costDB().it[p.id]))return '<a class="nb none" href="#stats/cost">себестоимость не задана</a>';
- return '<div class="nb '+grade(x)+'">чистыми '+m0(x.net)+' BYN <small>· маржа '+pct(x.mg)+(p._pot?'':' · без ЗП/упак. букета')+'</small></div>'}
+function netBadge(p){var x=calcUnit(p,p.price);if(!buyOf(p.id)&&!(costDB().it[p.id]))return '<a class="nb none" href="#stats/cost">себестоимость не задана</a>'+(window.OPS_STOCK&&OPS_STOCK.lastBuyHtml?OPS_STOCK.lastBuyHtml(p.id):'');
+ return '<div class="nb '+grade(x)+'">чистыми '+m0(x.net)+' BYN <small>· маржа '+pct(x.mg)+(p._pot?'':' · без ЗП/упак. букета')+'</small></div>'+(window.OPS_STOCK&&OPS_STOCK.lastBuyHtml?OPS_STOCK.lastBuyHtml(p.id):'')}
 
 /* ---------- Заказы (ДЕМО v4 под реальный каталог) ---------- */
 function day(o,h,m){var d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()+o);d.setHours(h,m||0);return d.getTime()}
@@ -166,7 +166,9 @@ $('#o-dates').onclick=function(e){var b=e.target.closest('[data-df]');if(!b)retu
 $('#o-q').oninput=renderList;$('#o-sort').onchange=renderList;
 $('#o-list').onclick=function(e){var r=e.target.closest('.row');if(!r)return;location.hash='order/'+r.dataset.id};
 $('#o-card').onclick=function(e){if(e.target.closest('[data-back]')){location.hash='orders';return}var b=e.target.closest('[data-st]');if(!b)return;
- var o=orders.filter(function(x){return x.id==sel})[0];if(!o||o.st==b.dataset.st)return;o.st=b.dataset.st;o.hist.push({st:o.st,t:Date.now()});saveO();renderOrders();toast('Заказ №'+o.id+': '+SN[o.st])};
+ var o=orders.filter(function(x){return x.id==sel})[0];if(!o||o.st==b.dataset.st)return;var prev=o.st;o.st=b.dataset.st;o.hist.push({st:o.st,t:Date.now()});saveO();
+ if(window.OPS_STOCK&&OPS_STOCK.onStatus)OPS_STOCK.onStatus(o,prev); /* выдан → списать, снятие выдачи → вернуть */
+ renderOrders();toast('Заказ №'+o.id+': '+SN[o.st])};
 
 /* ---------- Каталог UI ---------- */
 function careLbl(c){return c=='composition'?'композиция':c=='pot'?'горшок':'букет'}
@@ -174,7 +176,7 @@ function renderKat(){var q=($('#k-q').value||'').toLowerCase();
  var L=KAT.map(function(x){return prod(x.id)}).filter(function(p){return (kLive!='live'||p.live)&&(!q||(p.n+' '+p.c+' '+(p.h||'')).toLowerCase().indexOf(q)>=0)});
  $('#k-live').querySelectorAll('[data-live]').forEach(function(b){b.classList.toggle('on',b.dataset.live==kLive)});
  $('#k-grid').innerHTML=L.map(function(p){
-  return '<div class="prod'+(p.live?'':' dim')+'"><div class="ph" style="background-image:url(\''+esc(img(p.ph[0]))+'\')"><span class="tag">'+esc(p.c)+'</span>'+(p.live?'<span class="live">на сайте</span>':'<span class="off">скрыт</span>')+(p._ed?'<span class="ed">ИЗМЕНЁН</span>':'')+'</div><div class="bd"><h3>'+esc(p.n)+'</h3><div class="pr">'+money(p.price)+' BYN <small>/ '+(p.u||'шт.')+(p.h?' · '+esc(p.h):'')+'</small></div><p>'+esc(p.d)+'</p>'+(p._pot?'':'<div class="mut" style="font-size:12px;margin-bottom:6px">памятка: '+careLbl(careOf(p))+'</div>')+netBadge(p)+(isOwner()?'<div class="act"><button class="btn ghost sm" data-ed="'+p.id+'">Редактировать</button></div>':'')+'</div></div>'}).join('')||'<div class="empty">Нет позиций</div>'}
+  return '<div class="prod'+(p.live?'':' dim')+'"><div class="ph" style="background-image:url(\''+esc(img(p.ph[0]))+'\')"><span class="tag">'+esc(p.c)+'</span>'+(p.live?'<span class="live">на сайте</span>':'<span class="off">скрыт</span>')+(p._ed?'<span class="ed">ИЗМЕНЁН</span>':'')+'</div><div class="bd"><h3>'+esc(p.n)+'</h3><div class="pr">'+money(p.price)+' BYN <small>/ '+(p.u||'шт.')+(p.h?' · '+esc(p.h):'')+'</small></div><p>'+esc(p.d)+'</p>'+(p._pot?'':'<div class="mut" style="font-size:12px;margin-bottom:6px">памятка: '+careLbl(careOf(p))+'</div>')+netBadge(p)+(window.OPS_STOCK&&OPS_STOCK.hint?OPS_STOCK.hint(p):'')+(isOwner()?'<div class="act"><button class="btn ghost sm" data-ed="'+p.id+'">Редактировать</button></div>':'')+'</div></div>'}).join('')||'<div class="empty">Нет позиций</div>'}
 var cur=null,curPh=null;
 function openEd(id){if(!isOwner())return;var p=prod(id);cur=id;curPh=(p.ph||[]).slice();var m=$('#k-modal');m.hidden=false;var cg=careOf(p);
  $('#k-form').innerHTML='<form class="f"><h2>'+esc(p.n)+'</h2><div><div class="main" id="f-main"></div><div class="thumbs" id="f-th"></div>'+
@@ -188,7 +190,8 @@ function openEd(id){if(!isOwner())return;var p=prod(id);cur=id;curPh=(p.ph||[]).
  '<div class="cost"><h3>Прибыль <small>себестоимость — во вкладке <a href="#stats/cost" class="lnk">Статистика → Себестоимость</a></small></h3><div id="c-out"></div><div class="hint">Упаковка букета '+PACK+' BYN — фиксирована, в «чистыми» позиции не входит.</div></div>'+
  '</div><div class="acts"><button type="button" class="btn ghost" data-close>Отмена</button><button class="btn">Сохранить</button></div></form>';drawPh();costLive()}
 function costLive(){var f=$('#k-form form'),out=$('#c-out');if(!f||!out)return;var p=prod(cur),unit=num(f.p.value);p.price=unit;var x=calcUnit(p,unit),has=buyOf(cur)||costDB().it[cur];
- out.innerHTML=has?'<div class="nb '+grade(x)+'">чистыми <b>'+m0(x.net)+' BYN</b> · маржа '+pct(x.mg)+'<small style="display:block;margin-top:4px">закуп '+m0(x.buy)+' · ЗП '+m0(x.wk)+' · налог/эквайр. '+m0(x.fee)+'</small></div>':'<div class="nohint">Себестоимость не задана — <a href="#stats/cost" class="lnk">задайте в Статистике</a></div>'}
+ out.innerHTML=has?'<div class="nb '+grade(x)+'">чистыми <b>'+m0(x.net)+' BYN</b> · маржа '+pct(x.mg)+'<small style="display:block;margin-top:4px">закуп '+m0(x.buy)+' · ЗП '+m0(x.wk)+' · налог/эквайр. '+m0(x.fee)+'</small></div>':'<div class="nohint">Себестоимость не задана — <a href="#stats/cost" class="lnk">задайте в Статистике</a></div>';
+ if(window.OPS_STOCK&&OPS_STOCK.lastBuyHtml)out.insertAdjacentHTML('beforeend',OPS_STOCK.lastBuyHtml(cur)) /* последний приход — справка, расчёт не меняем */}
 $('#k-modal').addEventListener('input',function(e){if(e.target.name=='p')costLive()});
 function drawPh(){$('#f-main').style.backgroundImage=curPh.length?'url("'+img(curPh[0])+'")':'none';$('#f-th').innerHTML=curPh.map(function(u,i){return '<div class="'+(i==0?'on':'')+'" data-i="'+i+'" style="background-image:url(\''+esc(img(u))+'\')">'+(i==0?'<em>главное</em>':'')+'<button type="button" class="del" data-del="'+i+'" aria-label="Удалить фото">×</button></div>'}).join('')}
 (function(){var dr=null,sx=0,sy=0,moved=false;
@@ -328,13 +331,15 @@ $('#s-per').onclick=function(e){var b=e.target.closest('[data-per]');if(!b)retur
 function statsSub(h){var c=h=='stats/cost';$('#s-m').hidden=c;$('#s-c').hidden=!c;document.querySelectorAll('.subtabs a').forEach(function(a){a.classList.toggle('on',(a.dataset.s=='c')==c)});c?renderCostView():renderStats()}
 
 /* ---------- Роутинг + роль ---------- */
-window.OPS={$:$,esc:esc,toast:toast,img:img,prod:prod,KAT:KAT,LS:LS,dl:dl,shrink:shrink,basePrice:function(p){return prod(p.id).price},BASE:BASE,role:role,isOwner:isOwner};
-function route(){$('#k-modal').hidden=true;if(window.OPS_HOME)OPS_HOME.close();applyRole();
- var h=location.hash.replace('#','')||'orders',t=h.indexOf('catalog')==0?'catalog':h.indexOf('stats')==0?'stats':h.indexOf('home')==0?'home':'orders';
+window.OPS={$:$,esc:esc,toast:toast,img:img,prod:prod,KAT:KAT,LS:LS,dl:dl,shrink:shrink,basePrice:function(p){return prod(p.id).price},BASE:BASE,role:role,isOwner:isOwner,
+ money:money,m0:m0,num:num,uid:uid,fmtT:fmtT,buyOf:buyOf,orders:orders,saveO:saveO,renderOrders:renderOrders,renderKat:renderKat}; /* склад читает заказы и закуп */
+function route(){$('#k-modal').hidden=true;if(window.OPS_HOME)OPS_HOME.close();if($('#st-modal'))$('#st-modal').hidden=true;applyRole();
+ var h=location.hash.replace('#','')||'orders',t=h.indexOf('catalog')==0?'catalog':h.indexOf('stats')==0?'stats':h.indexOf('home')==0?'home':h.indexOf('stock')==0?'stock':'orders';
  if(!isOwner()&&t!='orders'){location.hash='orders';return}
  document.querySelectorAll('.tabs a').forEach(function(a){a.classList.toggle('on',a.dataset.t==t)});
  $('#v-orders').hidden=t!='orders';$('#v-catalog').hidden=t!='catalog';$('#v-stats').hidden=t!='stats';$('#v-home').hidden=t!='home';
- sel=h.indexOf('order/')==0?h.slice(6):null;if(t=='orders')renderOrders();else{document.body.classList.remove('card-open');t=='stats'?statsSub(h):t=='home'?(window.OPS_HOME&&OPS_HOME.render()):renderKat()}}
+ if($('#v-stock'))$('#v-stock').hidden=t!='stock'; /* вкладка склада */
+ sel=h.indexOf('order/')==0?h.slice(6):null;if(t=='orders')renderOrders();else{document.body.classList.remove('card-open');t=='stats'?statsSub(h):t=='home'?(window.OPS_HOME&&OPS_HOME.render()):t=='stock'?(window.OPS_STOCK&&OPS_STOCK.render(h)):renderKat()}}
 window.addEventListener('hashchange',route);
 $('#role-sw').onclick=function(e){var b=e.target.closest('[data-role]');if(!b)return;LS.set('aik_ops_role',b.dataset.role);toast(b.dataset.role=='owner'?'Роль: владелец':'Роль: флорист (только заказы)');route()};
 if(!KAT.length){toast('Каталог не загрузился — проверьте ../js/kat.js');console.warn('AIK_KAT empty')}

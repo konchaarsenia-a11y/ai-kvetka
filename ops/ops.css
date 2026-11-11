@@ -265,7 +265,7 @@ body:has(.modal:not([hidden])){overflow:hidden}
 #h-form .f{display:grid;gap:12px}
 @media (max-width:980px){.hwg{grid-template-columns:1fr}.hres{max-height:260px}}
 @media (max-width:640px){
- .tabs{grid-template-columns:repeat(4,1fr)}.tabs a{font-size:10.5px}
+ .tabs{grid-template-columns:repeat(5,1fr)}.tabs a{font-size:10px} /* склад — пятая вкладка */
  #h-body{gap:12px}.ptl{margin-bottom:10px}
  .hprev{grid-template-columns:104px 1fr;gap:12px;padding:10px}.hpt h4{font-size:21px}.hpt p{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
  .hfs{grid-template-columns:1fr}.hfs input,.hfs textarea,.hpick input,#h-bq,#h-mq{min-height:44px;padding:11px 12px}
@@ -324,7 +324,9 @@ body:has(.modal:not([hidden])){overflow:hidden}
 .demo{margin-left:10px}
 body[data-role="florist"] .tabs a[data-t="catalog"],
 body[data-role="florist"] .tabs a[data-t="home"],
-body[data-role="florist"] .tabs a[data-t="stats"]{display:none}
+body[data-role="florist"] .tabs a[data-t="stats"],
+body[data-role="florist"] .tabs a[data-t="stock"]{display:none} /* склад только хозяйке */
+@media (max-width:640px){body[data-role="florist"] .tabs{grid-template-columns:1fr}}
 
 /* фильтр live / бейджи каталога */
 .seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:var(--paper)}
@@ -352,3 +354,85 @@ body[data-role="florist"] .tabs a[data-t="stats"]{display:none}
 .dayb{margin-top:14px;border-top:1px solid var(--line2);padding-top:12px}.dayb .dh{display:flex;align-items:center;gap:10px;margin-bottom:8px}.dayb .dh b{font-weight:500}.dayb .dh b::first-letter{text-transform:uppercase}.dayb .dh span{color:var(--mut);font-size:13px}.dayb .x{margin-left:auto;border:0;background:none;cursor:pointer;color:var(--mut);font-size:15px}
 .dayb .dr{display:grid;grid-template-columns:46px 1fr auto auto;gap:10px;align-items:center;padding:8px 4px;border-bottom:1px solid var(--line2);color:inherit;text-decoration:none;font-size:14px}.dayb .dr:hover{background:rgba(0,0,0,.03)}.dayb .dr.cx{opacity:.5}.dayb .dr span:first-child{color:var(--mut)}.dayb .dr em{font-style:normal;white-space:nowrap}
 @media(max-width:600px){.dayb .dr{grid-template-columns:40px 1fr auto}.dayb .dr .st{display:none}}
+
+
+/* склад: остатки, формы прихода/списания, журнал */
+.skpis{margin-bottom:16px}
+.sktop{list-style:none;margin:0;padding:0;font-size:13px}
+.sktop li{display:flex;justify-content:space-between;gap:8px;padding:2px 0}
+.sktop em{font-style:normal;color:var(--mut);white-space:nowrap}
+.skhint{font-size:12px;align-self:flex-start;border-radius:999px;padding:3px 10px;margin-top:2px}
+.skhint.ok{background:rgba(74,82,90,.1);color:var(--ol)}
+.skhint.low{background:rgba(180,138,60,.14);color:#8a6a2c;font-weight:600}
+.skhint.out{background:rgba(176,84,72,.12);color:#a6483d;font-weight:600}
+.skhint.none{background:transparent;color:var(--mut);padding-left:0}
+.skbuy{font-size:12px;color:var(--mut);margin-top:4px}
+.skbuy small{display:inline;margin-left:4px}
+.sklist,.sklog,.skadj{display:flex;flex-direction:column;gap:8px}
+.skrow,.skaline,.skm{display:grid;gap:12px;align-items:center;background:var(--paper);border:1px solid var(--line2);border-radius:var(--r);padding:12px 14px}
+.skrow{grid-template-columns:48px minmax(0,1.4fr) 130px 90px auto}
+.skrow.low{border-color:#d9c48a;background:#fbf6ea}
+.skrow.out{opacity:.78}
+.ski{display:block;width:48px;height:48px;border-radius:10px;background:var(--line2) center/cover;flex:none}
+.ski.mon{display:flex;align-items:center;justify-content:center;background:rgba(74,82,90,.1);color:var(--ol);font-family:'Gilda Display',serif;font-size:20px}
+.skn{min-width:0}.skn b{display:block;font-weight:400;font-family:'Gilda Display',serif;font-size:18px}.skn small{display:block;color:var(--mut);font-size:12px}
+.skq{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 8px}
+.skq strong{font-family:'Gilda Display',serif;font-size:22px}
+.skq small{color:var(--mut)}
+.skmin{font-size:11px;color:var(--mut);display:flex;align-items:center;gap:4px;width:100%}
+.skmin input{width:64px;border:1px solid var(--line);border-radius:8px;padding:4px 6px;background:#fff;outline:none;text-align:center}
+.skv{text-align:right;color:var(--mut);font-size:13px;white-space:nowrap}
+.skact{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end}
+.skp{display:inline-flex;align-items:center;font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:999px}
+.skp.low{background:rgba(180,138,60,.16);color:#8a6a2c}
+.skp.out{background:rgba(176,84,72,.14);color:#a6483d}
+.skform .sub{margin:0 0 14px}
+.skform .hfs{margin-bottom:14px}
+.skform select,.hfs select{width:100%;background:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 11px;outline:none;font:inherit}
+.skline{display:grid;grid-template-columns:1fr 92px 110px 32px;gap:8px;align-items:start;margin-bottom:10px}
+.skline.one{grid-template-columns:1fr}
+.skpickw input{width:100%;background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 12px;outline:none}
+.skline input[data-inqty],.skline input[data-inbuy]{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 8px;outline:none;min-width:0}
+.skpick{margin-top:6px;max-height:260px;overflow:auto;display:grid;gap:4px}
+.sksel{display:grid;grid-template-columns:46px 1fr 32px;gap:10px;align-items:center;background:var(--bg);border:1px solid var(--ol);border-radius:12px;padding:6px 8px}
+.skacts{display:flex;justify-content:flex-end;margin-top:16px;gap:10px}
+.skaline{grid-template-columns:48px 1fr 140px}
+.skfact{font-size:11px;color:var(--mut);display:flex;align-items:center;gap:6px;justify-content:flex-end}
+.skfact input{width:88px;border:1px solid var(--line);border-radius:8px;padding:8px 8px;background:#fff;text-align:center;outline:none}
+.f.sknew{grid-template-columns:1fr}
+.skm{grid-template-columns:120px minmax(0,1.6fr) 110px 130px}
+.skm.undone{opacity:.5}.skm.undone .skmd,.skm.undone .skmn b{text-decoration:line-through}
+.skm.rev{background:var(--bg)}
+.skmt{font-size:12px;color:var(--mut)}
+.skmn{display:flex;gap:10px;align-items:center;min-width:0}.skmn .ski{width:40px;height:40px}.skmn small{display:block;color:var(--mut);font-size:12px}
+.skmd{font-family:'Gilda Display',serif;font-size:20px;text-align:right}.skmd.pos{color:#4c5a3a}.skmd.neg{color:#a6483d}
+.skmd small,.skmd em{display:block;font:300 12px 'Josefin Sans';color:var(--mut)}
+.skmb{font-size:12px;color:var(--mut);text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+@media (max-width:980px){
+ .skpis{grid-template-columns:1fr 1fr}
+ .skrow{grid-template-columns:48px 1fr auto;grid-template-areas:"i n q" "i n v" "a a a"}
+ .skrow .ski{grid-area:i}.skn{grid-area:n}.skq{grid-area:q}.skv{grid-area:v;text-align:left}.skact{grid-area:a;justify-content:flex-start}
+ .skm{grid-template-columns:1fr auto;grid-template-areas:"t d" "n n" "b b"}
+ .skmt{grid-area:t}.skmn{grid-area:n}.skmd{grid-area:d}.skmb{grid-area:b;flex-direction:row;align-items:center;justify-content:space-between;width:100%}
+}
+@media (max-width:640px){
+ .skline{grid-template-columns:1fr 1fr 32px;grid-template-areas:"p p x" "q b x"}
+ .skline .skpickw{grid-area:p}.skline input[data-inqty]{grid-area:q}.skline input[data-inbuy]{grid-area:b}.skline .xb{grid-area:x}
+ .skmin input,.skfact input,.skline input,.skpickw input,.skform select{min-height:44px}
+ .skact .btn{min-height:40px}
+ .skaline{grid-template-columns:48px 1fr;gap:8px}.skfact{grid-column:1/-1;justify-content:stretch}.skfact input{flex:1;min-height:44px}
+}
+
+/* склад на телефоне: компактная сводка и подвкладки с прокруткой, чтобы остатки были видны сразу */
+@media (max-width:640px){
+ #v-stock .sub{margin-bottom:8px}
+ #v-stock .subtabs{overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+ #v-stock .subtabs::-webkit-scrollbar{display:none}
+ #v-stock .subtabs a{flex:none;padding:10px 14px}
+ #v-stock .skpis{gap:8px;margin-bottom:10px}
+ #v-stock .skpis .kpi{padding:10px 12px}
+ #v-stock .skpis .kpi .v{font-size:22px}
+ #v-stock .sktop{font-size:12px}
+ #v-stock .tools{margin-bottom:8px}
+ #v-stock .skrow{padding:10px 12px}
+}
